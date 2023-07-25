@@ -17,7 +17,7 @@ ANCESTRY="$2"
 TRAIT="$3"
 TISSUE="$4"
 
-bash calculate_PLINK_score.sh \${ROOT_PATH} \${ANCESTRY} \${TRAIT} \${TISSUE} \${SLURM_ARRAY_TASK_ID}
+bash calculate_PLINK_scores.sh \${ROOT_PATH} \${ANCESTRY} \${TRAIT} \${TISSUE} \${SLURM_ARRAY_TASK_ID}
 
 exit
 EOF

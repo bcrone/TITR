@@ -28,11 +28,11 @@ RESULTS_PATH="${ROOT_PATH}/results/single_tissue/${TRAIT}"
 PLINK_PATH="$/nfs/turbo/boylelab/plink/plink"
 PLINK2_PATH="$/nfs/turbo/boylelab/plink2/plink2"
 
-${PLINK_PATH} --bfile ${EUR_1KG_BFILE} --clump-p1 1 --clump-p2 1 --clump-r2 0.2 --clump-kb 250 --clump ${SUMSTATS} --clump-snp-field SNP --clump-field P \
-		--out ${RESULTS_PATH}/standard/${TRAIT}.${ANCESTRY}.standard.${PARTITION}.clump
+\${PLINK_PATH} --bfile \${EUR_1KG_BFILE} --clump-p1 1 --clump-p2 1 --clump-r2 0.2 --clump-kb 250 --clump \${SUMSTATS} --clump-snp-field SNP --clump-field P \
+		--out \${RESULTS_PATH}/standard/\${TRAIT}.\${ANCESTRY}.standard.\${PARTITION}.clump
 
-${PLINK2_PATH} --bed ${BED_PATH} --bim ${BIM_FILE} --fam ${FAM_FILE} --score ${SUMSTATS} 1 2 3 header no-mean-imputation --q-score-range ${RANGE_LIST} ${SUMSTATS}.SNP.pvalue \
-        --extract ${RESULTS_PATH}/standard/${TRAIT}.${ANCESTRY}.standard.${PARTITION}.clump --keep ${SAMPLES_PATH} --out ${RESULTS_PATH}/standard/${TRAIT}.${ANCESTRY}.standard.${PARTITION}
+\${PLINK2_PATH} --bed \${BED_PATH} --bim \${BIM_FILE} --fam \${FAM_FILE} --score \${SUMSTATS} 1 2 3 header no-mean-imputation --q-score-range \${RANGE_LIST} \${SUMSTATS}.SNP.pvalue \
+        --extract \${RESULTS_PATH}/standard/\${TRAIT}.\${ANCESTRY}.standard.\${PARTITION}.clump --keep \${SAMPLES_PATH} --out \${RESULTS_PATH}/standard/\${TRAIT}.\${ANCESTRY}.standard.\${PARTITION}
 
 exit
 EOF
