@@ -20,8 +20,8 @@ TURF_PATH="${ROOT_PATH}/data/RegDB/${TISSUE}"
 
 RESULTS_PATH="${ROOT_PATH}/results/single_tissue/${TRAIT}"
 
-PLINK_PATH="$/nfs/turbo/boylelab/plink/plink"
-PLINK2_PATH="$/nfs/turbo/boylelab/plink2/plink2"
+PLINK_PATH="/nfs/turbo/boylelab/plink/plink"
+PLINK2_PATH="/nfs/turbo/boylelab/plink2/plink2"
 
 #IMPACT
 ${PLINK_PATH} --bfile ${EUR_1KG_BFILE} --clump-p1 1 --clump-p2 1 --clump-r2 0.2 --clump-kb 250 --clump ${SUMSTATS} --clump-snp-field SNP --clump-field P \
