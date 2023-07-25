@@ -1,7 +1,7 @@
 #!/bin/bash
 cat <<EOF
 #!/bin/bash
-#SBATCH --job-name=$2.$3.run_calculate_standard_scores
+#SBATCH --job-name=$2.$3.run_standard_scores
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -25,8 +25,8 @@ SAMPLES_PATH="${ROOT_PATH}/data/UKB/phenos/${ANCESTRY}/${ANCESTRY}.${TRAIT}.samp
 
 RESULTS_PATH="${ROOT_PATH}/results/single_tissue/${TRAIT}"
 
-PLINK_PATH="$/nfs/turbo/boylelab/plink/plink"
-PLINK2_PATH="$/nfs/turbo/boylelab/plink2/plink2"
+PLINK_PATH="/nfs/turbo/boylelab/plink/plink"
+PLINK2_PATH="/nfs/turbo/boylelab/plink2/plink2"
 
 \${PLINK_PATH} --bfile \${EUR_1KG_BFILE} --clump-p1 1 --clump-p2 1 --clump-r2 0.2 --clump-kb 250 --clump \${SUMSTATS} --clump-snp-field SNP --clump-field P \
 		--out \${RESULTS_PATH}/standard/\${TRAIT}.\${ANCESTRY}.standard.\${PARTITION}.clump

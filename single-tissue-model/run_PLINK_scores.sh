@@ -1,7 +1,7 @@
 #!/bin/bash
 cat <<EOF
 #!/bin/bash
-#SBATCH --job-name=$2.$3.run_calculate_PLINK_scores
+#SBATCH --job-name=$2.$3.run_PLINK_scores
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
