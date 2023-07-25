@@ -8,6 +8,7 @@ PARTITION="$5"
 
 EUR_1KG_BFILE="${ROOT_PATH}/data/1KG/1000G_EUR_Phase3_plink/1000G.EUR.QC"
 RANGE_LIST="${ROOT_PATH}/data/UKB/phenos/range_list.expanded"
+SUMSTATS="${ROOT_PATH}/data/GWAS/${TRAIT}/${TRAIT}.PLINK.TITR"
 
 BED_PATH="${ROOT_PATH}/data/UKB/${ANCESTRY}/ukb_imp_chrALL_v3.bed"
 BIM_PATH="${ROOT_PATH}/data/UKB/${ANCESTRY}/ukb_imp_chrALL_v3.bim"
