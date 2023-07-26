@@ -32,7 +32,7 @@ PLINK2_PATH="/nfs/turbo/boylelab/plink2/plink2"
 \${PLINK_PATH} --bfile \${EUR_1KG_BFILE} --clump-p1 1 --clump-p2 1 --clump-r2 0.2 --clump-kb 250 --clump \${SUMSTATS} --clump-snp-field SNP --clump-field P \
 		--out \${RESULTS_PATH}/standard/\${TRAIT}.\${ANCESTRY}.standard.clump
 
-\${PLINK2_PATH} --pgen \${BED_PATH} --pvar \${BIM_FILE} --psam \${FAM_FILE} --score \${SUMSTATS} 1 2 3 header no-mean-imputation --q-score-range \${RANGE_LIST} \${SUMSTATS}.SNP.pvalue \
+\${PLINK2_PATH} --pgen \${BED_PATH} --pvar \${BIM_PATH} --psam \${FAM_PATH} --score \${SUMSTATS} 1 2 3 header no-mean-imputation --q-score-range \${RANGE_LIST} \${SUMSTATS}.SNP.pvalue \
         --extract \${RESULTS_PATH}/standard/\${TRAIT}.\${ANCESTRY}.standard.clump.clumped --keep \${SAMPLES_PATH} --out \${RESULTS_PATH}/standard/\${TRAIT}.\${ANCESTRY}.standard
 
 exit
