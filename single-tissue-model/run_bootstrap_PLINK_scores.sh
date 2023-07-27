@@ -10,7 +10,6 @@ cat <<EOF
 #SBATCH --account=
 #SBATCH --partition=
 #SBATCH --output=logs/%x.log
-#SBATCH --array=10,50,100,200,500
 
 ROOT_PATH="$1"
 ANCESTRY="$2"
