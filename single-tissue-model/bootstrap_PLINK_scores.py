@@ -93,7 +93,7 @@ def addCodingModel(threshold, coding_prefix, null_pheno, null_adj_R2, isQuant):
 	coding_p = coding_model.pvalues['CODING']
 	return [coding_pheno, coding_model, coding_adj_R2, coding_d_R2, coding_p, coding_count]
 
-def scoreStandardModel(trait, ancestry, results_path, adj_R2, isQuant, pheno, iteration):
+def scoreStandardModel(trait, ancestry, results_path, adj_R2, isQuant, pheno, iteration, threshold=None):
 	def get_score_results(file, iteration, adj_R2, isQuant, pheno):
 		p = f"0.{file.split('.')[4]}"
 		if p == "0.sscore":
@@ -117,9 +117,12 @@ def scoreStandardModel(trait, ancestry, results_path, adj_R2, isQuant, pheno, it
 		row = {'Model':'Standard', 'Threshold':p, 'Partition':"NA", 'Adj R2':score_adj_R2,
 			'Delta Adj R2':score_d_R2, 'P':score_p, 'SNP Count':score_count, 'Iteration':iteration}
 		return row
-	def get_max_score(trait, ancestry, results_path, adj_R2, isQuant, iteration):
+	def get_max_score(trait, ancestry, results_path, adj_R2, isQuant, iteration, threshold=None):
 		score_path = f"{results_path}/standard"
-		score_files = glob.glob(f"{score_path}/{trait}.{ancestry}.standard.*.sscore")
+		if threshold:
+			score_files = glob.glob(f"{score_path}/{trait}.{ancestry}.standard.{threshold}.sscore")
+		else:
+			score_files = glob.glob(f"{score_path}/{trait}.{ancestry}.standard.*.sscore")
 		score_results = pd.DataFrame(
 			[get_score_results(file, iteration, adj_R2, isQuant, pheno) for file in score_files],
 			columns=["Model","Threshold","Partition","Adj R2","Delta Adj R2","P","SNP Count","Iteration"])
@@ -127,10 +130,10 @@ def scoreStandardModel(trait, ancestry, results_path, adj_R2, isQuant, pheno, it
 		score_max = score_results[score_results["Delta Adj R2"]==score_results["Delta Adj R2"].max()]
 		return score_max
 	score_head = pd.DataFrame(columns=["Model","Threshold","Partition","Adj R2","Delta Adj R2","P","SNP Count","Iteration"])
-	score_max = [get_max_score(trait, ancestry, results_path, adj_R2, isQuant, iteration)]
+	score_max = [get_max_score(trait, ancestry, results_path, adj_R2, isQuant, iteration, threshold)]
 	return score_head.append(score_max, ignore_index=True)
 
-def scoreModel(model, trait, ancestry, results_path, adj_R2, isQuant, pheno, iteration):  # 1:514.4733331203461
+def scoreModel(model, trait, ancestry, results_path, adj_R2, isQuant, pheno, iteration,threshold=None):  # 1:514.4733331203461
 	def get_score_results(file, model, partition, adj_R2, isQuant, pheno, iteration):
 		p = f"0.{file.split('.')[5]}"
 		if p == "0.sscore":
@@ -154,9 +157,12 @@ def scoreModel(model, trait, ancestry, results_path, adj_R2, isQuant, pheno, ite
 		row = {'Model':model, 'Threshold':p, 'Partition':partition, 'Adj R2':score_adj_R2, 
 			'Delta Adj R2':score_d_R2, 'P':score_p, 'SNP Count':score_count, 'Iteration':iteration}
 		return row
-	def get_max_score(model, partition, ancestry, results_path, isQuant, adj_R2, iteration):
+	def get_max_score(model, partition, ancestry, results_path, isQuant, adj_R2, iteration, threshold=None):
 		score_path = f"{results_path}/{model}"
-		score_files = glob.glob(f"{score_path}/{trait}.{ancestry}.{model}.{partition}.*.sscore")
+		if threshold:
+			score_files = glob.glob(f"{score_path}/{trait}.{ancestry}.{model}.{partition}.{threshold}.sscore")
+		else:
+			score_files = glob.glob(f"{score_path}/{trait}.{ancestry}.{model}.{partition}.*.sscore")
 		score_results = pd.DataFrame(
 			[get_score_results(file, model, partition, adj_R2, isQuant, pheno, iteration) for file in score_files],
 			columns=["Model","Threshold","Partition","Adj R2","Delta Adj R2","P","SNP Count","Iteration"])
@@ -164,7 +170,7 @@ def scoreModel(model, trait, ancestry, results_path, adj_R2, isQuant, pheno, ite
 		score_max = score_results[score_results['Delta Adj R2']==score_results['Delta Adj R2'].max()]
 		return score_max
 	score_head = pd.DataFrame(columns=["Model","Threshold","Partition","Adj R2","Delta Adj R2","P","SNP Count","Iteration"])
-	score_max = [get_max_score(model, partition, ancestry, results_path, isQuant, adj_R2, iteration) for partition in [10,50,100,200,500]]
+	score_max = [get_max_score(model, partition, ancestry, results_path, isQuant, adj_R2, iteration, threshold[partition]) for partition in [10,50,100,200,500]]
 	return score_head.append(score_max, ignore_index=True)
 
 def main(ancestry, trait, isQuant, root):
@@ -190,18 +196,23 @@ def main(ancestry, trait, isQuant, root):
 		   "Delta Adj R2":coding_d_R2, "P":coding_p, "SNP Count":coding_count, "Iteration":np.nan}
 	master_results = master_results.append(row, ignore_index=True)
 
-	standard_max = scoreStandardModel(trait, ancestry, results_path, coding_adj_R2, isQuant, coding_pheno, 0)
-	IMPACT_max = scoreModel("IMPACT", trait, ancestry, results_path, coding_adj_R2, isQuant, coding_pheno, 0)
-	SURF_max = scoreModel("SURF", trait, ancestry, results_path, coding_adj_R2, isQuant, coding_pheno, 0)
-	TURF_max = scoreModel("TURF", trait, ancestry, results_path, coding_adj_R2, isQuant, coding_pheno, 0)
+	standard_max = scoreStandardModel(trait, ancestry, results_path, coding_adj_R2, isQuant, coding_pheno, 0, None)
+	IMPACT_max = scoreModel("IMPACT", trait, ancestry, results_path, coding_adj_R2, isQuant, coding_pheno, 0, None)
+	SURF_max = scoreModel("SURF", trait, ancestry, results_path, coding_adj_R2, isQuant, coding_pheno, 0, None)
+	TURF_max = scoreModel("TURF", trait, ancestry, results_path, coding_adj_R2, isQuant, coding_pheno, 0, None)
+
+	standard_threshold = standard_max["Threshold"].values[0]
+	IMPACT_threshold = {partition:IMPACT_max.loc[IMPACT_max["Partition"]==partition]["Threshold"].values[0] for partition in [10,50,100,200,500]}
+	SURF_threshold = {partition:SURF_max.loc[SURF_max["Partition"]==partition]["Threshold"].values[0] for partition in [10,50,100,200,500]}
+	TURF_threshold = {partition:TURF_max.loc[TURF_max["Partition"]==partition]["Threshold"].values[0] for partition in [10,50,100,200,500]}
 
 	for i in range(1,1001):
 		print(trait, i)
 		sample_pheno = coding_pheno.sample(coding_pheno.shape[0], replace=True, random_state=i)
-		standard_max = standard_max.append(scoreStandardModel(trait, ancestry, results_path, coding_adj_R2, isQuant, sample_pheno, i), ignore_index=True)
-		IMPACT_max = IMPACT_max.append(scoreModel("IMPACT", trait, ancestry, results_path, coding_adj_R2, isQuant, sample_pheno, i), ignore_index=True)
-		SURF_max = SURF_max.append(scoreModel("SURF", trait, ancestry, results_path, coding_adj_R2, isQuant, sample_pheno, i), ignore_index=True)
-		TURF_max = TURF_max.append(scoreModel("TURF", trait, ancestry, results_path, coding_adj_R2, isQuant, sample_pheno, i), ignore_index=True)
+		standard_max = standard_max.append(scoreStandardModel(trait, ancestry, results_path, coding_adj_R2, isQuant, sample_pheno, i, standard_threshold), ignore_index=True)
+		IMPACT_max = IMPACT_max.append(scoreModel("IMPACT", trait, ancestry, results_path, coding_adj_R2, isQuant, sample_pheno, i, IMPACT_threshold), ignore_index=True)
+		SURF_max = SURF_max.append(scoreModel("SURF", trait, ancestry, results_path, coding_adj_R2, isQuant, sample_pheno, i, SURF_threshold), ignore_index=True)
+		TURF_max = TURF_max.append(scoreModel("TURF", trait, ancestry, results_path, coding_adj_R2, isQuant, sample_pheno, i, TURF_threshold), ignore_index=True)
 
 	standard_max.to_csv(f"{standard_path}/{trait}.{ancestry}.standard.bootstrap",sep='\t',header=True,index=False)
 	IMPACT_max.to_csv(f"{IMPACT_path}/{trait}.{ancestry}.IMPACT.bootstrap",sep='\t',header=True,index=False)
