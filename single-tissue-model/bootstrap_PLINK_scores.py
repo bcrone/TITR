@@ -170,7 +170,10 @@ def scoreModel(model, trait, ancestry, results_path, adj_R2, isQuant, pheno, ite
 		score_max = score_results[score_results['Delta Adj R2']==score_results['Delta Adj R2'].max()]
 		return score_max
 	score_head = pd.DataFrame(columns=["Model","Threshold","Partition","Adj R2","Delta Adj R2","P","SNP Count","Iteration"])
-	score_max = [get_max_score(model, partition, ancestry, results_path, isQuant, adj_R2, iteration, threshold[partition]) for partition in [10,50,100,200,500]]
+	if threshold:
+		score_max = [get_max_score(model, partition, ancestry, results_path, isQuant, adj_R2, iteration, threshold[partition]) for partition in [10,50,100,200,500]]
+	else:
+		score_max = [get_max_score(model, partition, ancestry, results_path, isQuant, adj_R2, iteration, None) for partition in [10,50,100,200,500]]
 	return score_head.append(score_max, ignore_index=True)
 
 def main(ancestry, trait, isQuant, root):
