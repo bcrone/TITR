@@ -19,6 +19,8 @@ def calc_pval(model, x, y):
 	beta_hat = [model.intercept_] + model.coef_.tolist()
 	x1 = np.column_stack((np.ones(y_len), x))
 	st_dev_noise = np.sqrt(np.sum(np.square(y - x1@beta_hat))/(y_len - x1.shape[1]))
+	if np.linalg.det(x1.T@x1) == 0:
+		return 0
 	beta_cov = np.linalg.inv(x1.T@x1)
 	t_val = beta_hat/(st_dev_noise*np.sqrt(np.diagonal(beta_cov)))
 	p_vals = t.sf(np.abs(t_val), y_len-x1.shape[1])*2
