@@ -1,0 +1,7 @@
+__default__:
+  cpus-per-task: 1
+  nodes: 1
+  mem-per-cpu: 65g
+  time: 05:00:00
+	account: apboyle99
+  partition: largemem,standard
