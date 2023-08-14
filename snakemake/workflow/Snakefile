@@ -1,6 +1,6 @@
 rule all:
 	input:
-		expand("/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/serial/customized_baselineLD_cts.RegDB.{tissue}.{chrom}.out")
+		expand("/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/test/customized_baselineLD_cts.RegDB.{tissue}.{chrom}.out")
 rule calculate_LDscores:
 	resources:
 		time      = "5:00:00"
@@ -13,6 +13,6 @@ rule calculate_LDscores:
 		annot  = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/serial/customized_baselineLD_cts.RegDB.{tissue}.{chrom}.annot.gz"
 		hm3    = "/nfs/turbo/boylelab/crone/data/1KG/hapmap3_snps/hm.{chrom}.snp"
 	output:
-		prefix = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/serial/customized_baselineLD_cts.RegDB.{tissue}.{chrom}"
+		prefix = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/test/customized_baselineLD_cts.RegDB.{tissue}.{chrom}"
 	shell:
 		"python {input.script} --l2 --bfile {input.bfile} --ld-wind-cm 1 --out {output.prefix} --annot {input.annot} --print-snps {input.hm3} > {output.prefix}.out"
