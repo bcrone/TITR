@@ -25,10 +25,10 @@ rule calculate_LDscores:
 		partition = "largemem,standard"
 	input:
 		script = "/nfs/turbo/boylelab/crone/tools/ldsc/ldsc.py",
-		bfile  = "/nfs/turbo/boylelab/crone/data/1KG/1000G_EUR_Phase3_plink/1000G.EUR.QC.RegDB.{chrom}",
-		annot  = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/serial/customized_baselineLD_cts.RegDB.{tissue}.{chrom}.annot.gz",
-		hm3    = "/nfs/turbo/boylelab/crone/data/1KG/hapmap3_snps/hm.{chrom}.snp",
+		bfile  = "/nfs/turbo/boylelab/crone/data/1KG/1000G_EUR_Phase3_plink/1000G.EUR.QC.RegDB.{wildcard.chrom}",
+		annot  = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/serial/customized_baselineLD_cts.RegDB.{wildcard.tissue}.{wildcard.chrom}.annot.gz",
+		hm3    = "/nfs/turbo/boylelab/crone/data/1KG/hapmap3_snps/hm.{wildcard.chrom}.snp",
 	output:
-		prefix = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/test/customized_baselineLD_cts.RegDB.{tissue}.{chrom}"
+		prefix = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/test/customized_baselineLD_cts.RegDB.{wildcard.tissue}.{wildcard.chrom}"
 	shell:
 		"python {input.script} --l2 --bfile {input.bfile} --ld-wind-cm 1 --out {output.prefix} --annot {input.annot} --print-snps {input.hm3} > {output.prefix}.out"
