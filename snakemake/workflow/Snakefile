@@ -19,7 +19,7 @@ LDSC_CONDA = "/nfs/turbo/boylelab/crone/tools/ldsc/environment.py"
 
 rule all:
 	input:
-		expand("/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baseline_v1.2/test/customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.out",tissue=TISSUES,chrom=CHROMS)
+		expand("/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/test/customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK",tissue=TISSUES,chrom=CHROMS)
 rule calculate_LDscores:
 	conda: LDSC_CONDA
 	input:
@@ -28,7 +28,7 @@ rule calculate_LDscores:
 		annot  = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/serial/customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.annot.gz",
 		hm3    = "/nfs/turbo/boylelab/crone/data/1KG/hapmap3_snps/hm.{chrom}.snp",
 	output:
-		out     = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baseline_v1.2/test/customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}",
-		out_out = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baseline_v1.2/test/customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.out"
+		out  = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/test/customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}",
+		done = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/test/customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK"
 	shell:
-		"/home/crone/.conda/envs/ldsc/bin/python {input.script} --l2 --bfile {input.bfile} --ld-wind-cm 1 --out {output.out} --annot {input.annot} --print-snps {input.hm3} > {output.out_out}"
+		"/home/crone/.conda/envs/ldsc/bin/python {input.script} --l2 --bfile {input.bfile} --ld-wind-cm 1 --out {output.out} --annot {input.annot} --print-snps {input.hm3} && touch {output.done}"
