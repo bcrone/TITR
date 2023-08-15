@@ -18,7 +18,7 @@ LDSC_PATH          = "/nfs/turbo/boylelab/crone/tools/ldsc/ldsc.py"
 
 rule all:
 	input:
-		expand("/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baseline_v1.2/test/customized_baselineLD_cts.RegDB.{tissue}.{chrom}.out",tissue=TISSUES,chrom=CHROMS)
+		expand("/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baseline_v1.2/test/customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.out",tissue=TISSUES,chrom=CHROMS)
 rule calculate_LDscores:
 	input:
 		script = LDSC_PATH,
