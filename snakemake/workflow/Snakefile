@@ -29,4 +29,4 @@ rule calculate_LDscores:
 		out     = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baseline_v1.2/test/customized_baselineLD_cts.RegDB.{tissue}.{chrom}",
 		out_out = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baseline_v1.2/test/customized_baselineLD_cts.RegDB.{tissue}.{chrom}.out"
 	shell:
-		"python {input.script} --l2 --bfile {input.bfile} --ld-wind-cm 1 --out {output.out} --annot {input.annot} --print-snps {input.hm3} > {output.prefix}.out"
+		"python {input.script} --l2 --bfile {input.bfile} --ld-wind-cm 1 --out {output.out} --annot {input.annot} --print-snps {input.hm3} > {output.out_out}.out"
