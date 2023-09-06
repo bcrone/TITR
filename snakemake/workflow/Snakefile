@@ -48,8 +48,7 @@ rule calculate_h2:
 	input:
 		script = LDSC_PATH,
 		python = LDSC_PYTHON,
-		sumstats = config["ldsc"]["GWAS"] + "{trait}/{trait}.sumstats.gz",
-		ldscore_OK = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.OK",
+		sumstats = config["ldsc"]["GWAS"] + "{trait}/{trait}.sumstats.gz"
 	output:
 		out = config["ldsc"]["h2_path"] + "{trait}/{trait}/{tissue}",
 		done = config["ldsc"]["h2_path"] + "{trait}/{trait}/{tissue}.OK"
