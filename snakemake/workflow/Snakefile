@@ -48,7 +48,7 @@ rule calculate_h2:
 	input:
 		script = LDSC_PATH,
 		python = LDSC_PYTHON,
-		sumstats = config["ldsc"]["GWAS"] + "{trait}/{trait}.sumstats.gz"
+		sumstats = config["ldsc"]["GWAS"] + "{trait}/LDSC/{trait}.sumstats.gz"
 	output:
 		out = config["ldsc"]["h2_path"] + "{trait}/{trait}/{tissue}",
 		done = config["ldsc"]["h2_path"] + "{trait}/{trait}/{tissue}.OK"
