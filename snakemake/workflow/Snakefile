@@ -24,10 +24,10 @@ LDSC_PYTHON = config["ldsc"]["python"]
 
 rule all:
 	input:
-		#expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.{ext}",tissue=TISSUES,chrom=CHROMS,ext=["log","l2.ldscore.gz","l2.M","l2.M_5_50","OK"]),
-		expand(config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.{ext}",trait=TRAITS,tissue=TISSUES,ext=["log","results","delete","part_delete","OK"])
+		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.{ext}",tissue=TISSUES,chrom=CHROMS,ext=["log","l2.ldscore.gz","l2.M","l2.M_5_50","OK"])
+		#expand(config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.{ext}",trait=TRAITS,tissue=TISSUES,ext=["log","results","delete","part_delete","OK"])
 
-'''rule calculate_LDscores:
+rule calculate_LDscores:
 	conda: LDSC_CONDA
 	input:
 		expand(config["ldsc"]["baselineLD"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.annot.gz",tissue=TISSUES,chrom=CHROMS),
@@ -63,3 +63,4 @@ rule calculate_h2:
 		freq = config["ldsc"]["freq"]
 	shell:
 		"{params.python} {params.script} --h2 {params.sumstats} --ref-ld-chr {params.ldscore} --w-ld-chr {params.weights} --overlap-annot --frqfile-chr {params.freq} --out {params.out} --print-coefficients --print-delete-vals && touch {params.done}"
+'''
