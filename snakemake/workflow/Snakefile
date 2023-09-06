@@ -55,12 +55,12 @@ rule calculate_h2:
 		expand(config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.results",trait=TRAITS,tissue=TISSUES),
 		expand(config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.delete",trait=TRAITS,tissue=TISSUES),
 		expand(config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.part_delete",trait=TRAITS,tissue=TISSUES),
-		done = config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.OK"
+		done = config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.OK",
+		out = config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}"
 	params:
 		ldscore = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.",
 		weights = config["ldsc"]["weights"],
-		freq = config["ldsc"]["freq"],
-		out = config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}"
+		freq = config["ldsc"]["freq"]
 
 	shell:
-		"{input.python} {input.script} --h2 {input.sumstats} --ref-ld-chr {params.ldscore} --w-ld-chr {params.weights} --overlap-annot --frqfile-chr {params.freq} --out {params.out} --print-coefficients --print-delete-vals && touch {output.done}"
+		"{input.python} {input.script} --h2 {input.sumstats} --ref-ld-chr {params.ldscore} --w-ld-chr {params.weights} --overlap-annot --frqfile-chr {params.freq} --out {output.out} --print-coefficients --print-delete-vals && touch {output.done}"
