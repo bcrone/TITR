@@ -36,12 +36,13 @@ rule calculate_LDscores:
 		annot  = config["ldsc"]["baselineLD"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.annot.gz",
 		hm3    = config["ldsc"]["HM3"] + "hm.{chrom}.snp"
 	output:
-		out  = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}",
-		done = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK"
+		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.{ext}",tissue=TISSUES,chrom=CHROMS,ext=["log","l2.ldscore.gz","l2.M","l2.M_5_50","OK"]),
 	params:
+		out  = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}",
+		done = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK",
 		ld_wind_cm = 1
 	shell:
-		"{input.python} {input.script} --l2 --bfile {input.bfile} --ld-wind-cm {params.ld_wind_cm} --out {output.out} --annot {input.annot} --print-snps {input.hm3} && touch {output.done}"
+		"{input.python} {input.script} --l2 --bfile {input.bfile} --ld-wind-cm {params.ld_wind_cm} --out {params.out} --annot {input.annot} --print-snps {input.hm3} && touch {params.done}"
 
 rule calculate_h2:
 	conda: LDSC_CONDA
@@ -51,15 +52,13 @@ rule calculate_h2:
 		python = LDSC_PYTHON,
 		sumstats = config["ldsc"]["GWAS"] + "{trait}/LDSC/{trait}.sumstats.gz"
 	output:
-		#expand(config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.log",trait=TRAITS,tissue=TISSUES),
-		#expand(config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.results",trait=TRAITS,tissue=TISSUES),
-		#expand(config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.delete",trait=TRAITS,tissue=TISSUES),
-		#expand(config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.part_delete",trait=TRAITS,tissue=TISSUES),
-		done = config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.OK",
-		out = config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}"
+		expand(config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.{ext}",trait=TRAITS,tissue=TISSUES,ext=["log","results","delete","part_delete","OK"])
+		
 	params:
+		out = config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}",
+		done = config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.OK",
 		ldscore = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.",
 		weights = config["ldsc"]["weights"],
 		freq = config["ldsc"]["freq"]
 	shell:
-		"{input.python} {input.script} --h2 {input.sumstats} --ref-ld-chr {params.ldscore} --w-ld-chr {params.weights} --overlap-annot --frqfile-chr {params.freq} --out {output.out} --print-coefficients --print-delete-vals && touch {output.done}"
+		"{input.python} {input.script} --h2 {input.sumstats} --ref-ld-chr {params.ldscore} --w-ld-chr {params.weights} --overlap-annot --frqfile-chr {params.freq} --out {params.out} --print-coefficients --print-delete-vals && touch {params.done}"
