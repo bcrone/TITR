@@ -49,7 +49,7 @@ rule calculate_h2:
 		script = LDSC_PATH,
 		python = LDSC_PYTHON,
 		sumstats = config["ldsc"]["GWAS"] + "{trait}/LDSC/{trait}.sumstats.gz",
-		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK",tissue=TISSUES,chrom=CHROMS)
+		expand("/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/test/customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK",tissue=TISSUES,chrom=CHROMS)
 	output:
 		out = config["ldsc"]["h2_path"] + "{trait}/{trait}/{tissue}",
 		done = config["ldsc"]["h2_path"] + "{trait}/{trait}/{tissue}.OK"
