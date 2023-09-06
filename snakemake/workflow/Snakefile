@@ -1,3 +1,7 @@
+configfile: "config.yaml"
+
+TRAITS=["BMI","height","HDL","LDL"]
+
 TISSUES=["ADIPOSE_TISSUE","ADRENAL_GLAND","ARTERIAL_BLOOD_VESSEL","BLOOD",
 				 "BLOOD_VESSEL","BONE_ELEMENT","BONE_MARROW","BRAIN",
 				 "BREAST","COLON","CONNECTIVE_TISSUE","EAR",
@@ -14,21 +18,46 @@ TISSUES=["ADIPOSE_TISSUE","ADRENAL_GLAND","ARTERIAL_BLOOD_VESSEL","BLOOD",
 
 CHROMS=[x for x in range(1,23)]
 
-LDSC_PATH  = "/nfs/turbo/boylelab/crone/tools/ldsc/ldsc.py"
-LDSC_CONDA = "/nfs/turbo/boylelab/crone/tools/ldsc/environment.py"
+LDSC_PATH  = config["ldsc"]["path"]
+LDSC_CONDA = config["ldsc"]["conda"]
+LDSC_PYTHON = configs["ldsc"]["python"]
 
 rule all:
 	input:
-		expand("/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/test/customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK",tissue=TISSUES,chrom=CHROMS)
+		expand("/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/test/customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK",tissue=TISSUES,chrom=CHROMS),
+		expand("/nfs/turbo/boylelab/crone/results/h2/{trait}/{trait}/{tissue}.OK",trait=TRAITS,tissue=TISSUES)
+
 rule calculate_LDscores:
 	conda: LDSC_CONDA
 	input:
 		script = LDSC_PATH,
-		bfile  = "/nfs/turbo/boylelab/crone/data/1KG/1000G_EUR_Phase3_plink/1000G.EUR.QC.RegDB.{chrom}",
-		annot  = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/serial/customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.annot.gz",
-		hm3    = "/nfs/turbo/boylelab/crone/data/1KG/hapmap3_snps/hm.{chrom}.snp",
+		python = LDSC_PYTHON,
+		bfile  = config["ldsc"]["1KG"] + "1000G.EUR.QC.RegDB.{chrom}",
+		annot  = config["ldsc"]["baselineLD"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.annot.gz",
+		hm3    = config["ldsc"]["HM3"] + "hm.{chrom}.snp"
 	output:
-		out  = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/test/customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}",
-		done = "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/test/customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK"
+		out  = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}",
+		done = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK",
+		done_tissue = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.OK"
+	params:
+		ld_wind_cm = 1
 	shell:
-		"/home/crone/.conda/envs/ldsc/bin/python {input.script} --l2 --bfile {input.bfile} --ld-wind-cm 1 --out {output.out} --annot {input.annot} --print-snps {input.hm3} && touch {output.done}"
+		"{input.python} {input.script} --l2 --bfile {input.bfile} --ld-wind-cm {params.ld_wind_cm} --out {output.out} --annot {input.annot} --print-snps {input.hm3} && touch {output.done} && touch {output.done_tissue}"
+
+rule calculate_h2:
+	conda: LDSC_CONDA
+	input:
+		script = LDSC_PATH,
+		python = LDSC_PYTHON,
+		sumstats = config["ldsc"]["GWAS"] + "{trait}/{trait}.sumstats.gz",
+		ldscore_OK = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.OK",
+	output:
+		out = config["ldsc"]["h2_path"] + "{trait}/{trait}/{tissue}",
+		done = config["ldsc"]["h2_path"] + "{trait}/{trait}/{tissue}.OK"
+	params:
+		ldscore = config["ldsc"]["outpath"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.",
+		weights = config["ldsc"]["weights"],
+		freq = config["ldsc"]["freq"]
+
+	shell:
+		"{input.python} {input.script} --h2 {input.sumstats} --ref-ld-chr {params.ldscore} --w-ld-chr {params.weights} --overlap-annot --frqfile-chr {params.freq} --out {output.out} --print-coefficients --print-delete-vals && touch {output.done}"
