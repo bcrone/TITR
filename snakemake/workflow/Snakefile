@@ -24,10 +24,10 @@ LDSC_PYTHON = config["ldsc"]["python"]
 
 rule all:
 	input:
-		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.{ext}",tissue=TISSUES,chrom=CHROMS,ext=["log","l2.ldscore.gz","l2.M","l2.M_5_50","OK"]),
+		#expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.{ext}",tissue=TISSUES,chrom=CHROMS,ext=["log","l2.ldscore.gz","l2.M","l2.M_5_50","OK"]),
 		expand(config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.{ext}",trait=TRAITS,tissue=TISSUES,ext=["log","results","delete","part_delete","OK"])
 
-rule calculate_LDscores:
+'''rule calculate_LDscores:
 	conda: LDSC_CONDA
 	input:
 		expand(config["ldsc"]["baselineLD"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.annot.gz",tissue=TISSUES,chrom=CHROMS),
@@ -45,7 +45,7 @@ rule calculate_LDscores:
 		ld_wind_cm = 1
 	shell:
 		"{params.python} {params.script} --l2 --bfile {params.bfile} --ld-wind-cm {params.ld_wind_cm} --out {params.out} --annot {params.annot} --print-snps {params.hm3} && touch {params.done}"
-
+'''
 rule calculate_h2:
 	conda: LDSC_CONDA
 	input:

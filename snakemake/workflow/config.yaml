@@ -8,5 +8,5 @@ ldsc:
   GWAS: "/nfs/turbo/boylelab/crone/data/GWAS/"
   weights: "/nfs/turbo/boylelab/crone/data/1KG/1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC."
   freq: "/nfs/turbo/boylelab/crone/data/1KG/1000G_Phase3_frq/1000G.EUR.QC."
-  ldscore_path: "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/test/"
+  ldscore_path: "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/serial/"
   h2_path: "/nfs/turbo/boylelab/crone/results/h2/"
