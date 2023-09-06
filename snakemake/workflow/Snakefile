@@ -31,7 +31,7 @@ rule calculate_LDscores:
 	conda: LDSC_CONDA
 	input:
 		expand(config["ldsc"]["baselineLD"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.annot.gz",tissue=TISSUES,chrom=CHROMS),
-		expand(config["ldsc"]["HM3"] + "hm.{chrom}.snp",tissue=TISSUES,chrom=CHROMS)
+		expand(config["ldsc"]["HM3"] + "hm.{chrom}.snp",chrom=CHROMS)
 	output:
 		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.{ext}",tissue=TISSUES,chrom=CHROMS,ext=["log","l2.ldscore.gz","l2.M","l2.M_5_50","OK"]),
 	params:
