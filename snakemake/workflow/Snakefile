@@ -20,7 +20,7 @@ CHROMS=[x for x in range(1,23)]
 
 LDSC_PATH  = config["ldsc"]["path"]
 LDSC_CONDA = config["ldsc"]["conda"]
-LDSC_PYTHON = configs["ldsc"]["python"]
+LDSC_PYTHON = config["ldsc"]["python"]
 
 rule all:
 	input:
@@ -37,12 +37,11 @@ rule calculate_LDscores:
 		hm3    = config["ldsc"]["HM3"] + "hm.{chrom}.snp"
 	output:
 		out  = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}",
-		done = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK",
-		done_tissue = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.OK"
+		done = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK"
 	params:
 		ld_wind_cm = 1
 	shell:
-		"{input.python} {input.script} --l2 --bfile {input.bfile} --ld-wind-cm {params.ld_wind_cm} --out {output.out} --annot {input.annot} --print-snps {input.hm3} && touch {output.done} && touch {output.done_tissue}"
+		"{input.python} {input.script} --l2 --bfile {input.bfile} --ld-wind-cm {params.ld_wind_cm} --out {output.out} --annot {input.annot} --print-snps {input.hm3} && touch {output.done}"
 
 rule calculate_h2:
 	conda: LDSC_CONDA
