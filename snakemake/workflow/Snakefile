@@ -49,7 +49,7 @@ rule all:
 rule calculate_h2:
 	conda: LDSC_CONDA
 	input:
-		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK",tissue=TISSUES,chrom=CHROMS),
+		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.{ext}",tissue=TISSUES,chrom=CHROMS,ext=["log","l2.ldscore.gz","l2.M","l2.M_5_50"]),
 		expand(config["ldsc"]["GWAS"] + "{trait}/LDSC/{trait}.sumstats.gz",trait=TRAITS)
 	output:
 		expand(config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.{ext}",trait=TRAITS,tissue=TISSUES,ext=["log","results","delete","part_delete","OK"])
