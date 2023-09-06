@@ -54,7 +54,7 @@ rule calculate_h2:
 		out = config["ldsc"]["h2_path"] + "{trait}/{trait}/{tissue}",
 		done = config["ldsc"]["h2_path"] + "{trait}/{trait}/{tissue}.OK"
 	params:
-		ldscore = config["ldsc"]["outpath"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.",
+		ldscore = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.",
 		weights = config["ldsc"]["weights"],
 		freq = config["ldsc"]["freq"]
 
