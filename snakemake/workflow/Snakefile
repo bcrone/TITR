@@ -25,7 +25,7 @@ LDSC_PYTHON = config["ldsc"]["python"]
 rule all:
 	input:
 		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",tissue=TISSUES,chrom=CHROMS),
-		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}/{trait}.{tissue}.results",trait=TRAITS,tissue=TISSUES)
+		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.results",trait=TRAITS,tissue=TISSUES)
 
 rule calculate_LDscores:
 	conda: LDSC_CONDA
@@ -59,7 +59,7 @@ rule calculate_h2:
 		sumstats = config["ldsc"]["GWAS"] + "{trait}/LDSC/{trait}.sumstats.gz",
 		ref_ld_chr = expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{{tissue}}.{chrom}.l2.ldscore.gz",chrom=CHROMS)
 	output:
-		config["ldsc"]["h2_path"] + "{trait}/{trait}.{tissue}.results"
+		config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.results"
 	params:
 		script = LDSC_PATH,
 		python = LDSC_PYTHON,
