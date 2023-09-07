@@ -3,7 +3,7 @@ ldsc:
   conda: "/nfs/turbo/boylelab/crone/tools/ldsc/environment.yml"
   python: "/home/crone/.conda/envs/ldsc/bin/python"
   1KG: "/nfs/turbo/boylelab/crone/data/1KG/1000G_EUR_Phase3_plink/"
-  baselineLD: "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/test/"
+  baselineLD: "/nfs/turbo/boylelab/crone/data/1KG/RegDB_custom_baselineLD_v1.2/serial/"
   HM3: "/nfs/turbo/boylelab/crone/data/1KG/hapmap3_snps/"
   GWAS: "/nfs/turbo/boylelab/crone/data/GWAS/"
   weights: "/nfs/turbo/boylelab/crone/data/1KG/1000G_Phase3_weights_hm3_no_MHC/weights.hm3_noMHC."
