@@ -43,20 +43,23 @@ rule calculate_LDscores:
 		ld_wind_cm = 1,
 		out = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized"
 	shell:
-		"{{input.python}} {{input.script}}"
+		"{input.python} {input.script}"
 		" --l2"
-		" --bfile  {{params.bfile}}.{{wildcards.chrom}}"
-		" --ld-wind-cm {{params.ld_wind_cm}}"
-		" --out {{params.out}}.{{wildcards.tissue}}.{{wildcards.chrom}}"
-		" --annot {{input.annot}}"
-		" --print-snps {{input.hm3}} && touch {{params.out}}.{{wildcards.tissue}}.{{wildcards.chrom}}.OK"
-'''
+		" --bfile  {params.bfile}.{wildcards.chrom}"
+		" --ld-wind-cm {params.ld_wind_cm}"
+		" --out {params.out}.{wildcards.tissue}.{wildcards.chrom}"
+		" --annot {input.annot}"
+		" --print-snps {input.hm3} && touch {params.out}.{wildcards.tissue}.{wildcards.chrom}.OK"
+
 rule calculate_h2:
 	conda: LDSC_CONDA
 	input:
-		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.{ext}",tissue=TISSUES,chrom=CHROMS,ext=["log","l2.ldscore.gz","l2.M","l2.M_5_50"])
+		script = LDSC_PATH,
+		python = LDSC_PYTHON,
+		sumstats = config["ldsc"]["GWAS"] + "{trait}/LDSC/{trait}.sumstats.gz",
+		ref_ld_chr = expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{{tissue}}.{chrom}.l2.ldscore.gz",chrom=CHROMS)
 	output:
-		expand(config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.{ext}",trait=TRAITS,tissue=TISSUES,ext=["log","results","delete","part_delete","OK"])
+		config["ldsc"]["h2_path"] + "{trait}/{trait}.{tissue}.results"
 	params:
 		script = LDSC_PATH,
 		python = LDSC_PYTHON,
@@ -67,5 +70,11 @@ rule calculate_h2:
 		weights = config["ldsc"]["weights"],
 		freq = config["ldsc"]["freq"]
 	shell:
-		"{params.python} {params.script} --h2 {params.sumstats} --ref-ld-chr {params.ldscore} --w-ld-chr {params.weights} --overlap-annot --frqfile-chr {params.freq} --out {params.out} --print-coefficients --print-delete-vals && touch {params.done}"
-'''
+		"{input.python} {input.script}"
+		" --h2 {input.sumstats}"
+		" --ref-ld-chr {input.ref_ld_chr}"
+		" --w-ld-chr {params.weights}"
+		" --overlap-annot"
+		" --frqfile-chr {params.freq}"
+		" --out {params.out}/{wildcards.trait}/{wildcards.trait}.{wildcards.tissue}"
+		" --print-coefficients --print-delete-vals && touch {params.done}/{wildcards.trait}/{wildcards.trait}.OK"
