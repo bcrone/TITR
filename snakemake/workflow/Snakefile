@@ -36,7 +36,7 @@ rule calculate_LDscores:
 		annot  = config["ldsc"]["baselineLD"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.annot.gz",
 		hm3    = config["ldsc"]["HM3"] + "hm.{chrom}.snp"
 	output:
-		expand(onfig["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.{ext}",tissue=TISSUES,chrom=CHROMS,ext=["log","l2.ldscore.gz","l2.M","l2.M_5_50","OK"])
+		expand(onfig["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.{ext}",tissue=TISSUES,chrom=CHROMS,ext=["log","l2.ldscore.gz","l2.M","l2.M_5_50","OK"]),
 		out  = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}",
 		done = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK"
 	params:
