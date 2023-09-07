@@ -44,7 +44,7 @@ rule calculate_LDscores:
 		hm3    = config["ldsc"]["HM3"] + "hm",
 		ld_wind_cm = 1
 	shell:
-		"{params.python} {params.script} --l2 --bfile {params.bfile}.{wildcard.chrom} --ld-wind-cm {params.ld_wind_cm} --out {params.out}.{wildcard.tissue}.{wildcard.chrom} --annot {params.annot}.{wildcard.tissue}.{wildcard.chrom}.annot.gz --print-snps {params.hm3}.{wildcard.chrom}.snp && touch {params.done}.{wildcard.tissue}.{wildcard.chrom}.OK"
+		"{params.python} {params.script} --l2 --bfile {params.bfile}.{wildcards.chrom} --ld-wind-cm {params.ld_wind_cm} --out {params.out}.{wildcards.tissue}.{wildcards.chrom} --annot {params.annot}.{wildcards.tissue}.{wildcards.chrom}.annot.gz --print-snps {params.hm3}.{wildcards.chrom}.snp && touch {params.done}.{wildcards.tissue}.{wildcards.chrom}.OK"
 '''
 rule calculate_h2:
 	conda: LDSC_CONDA
