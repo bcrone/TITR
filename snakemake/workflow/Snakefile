@@ -24,7 +24,7 @@ LDSC_PYTHON = config["ldsc"]["python"]
 
 rule all:
 	input:
-		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",tissue=TISSUES,chrom=CHROMS)
+		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",tissue=TISSUES,chrom=CHROMS),
 		expand(config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.results",trait=TRAITS,tissue=TISSUES)
 
 rule calculate_LDscores:
