@@ -30,21 +30,19 @@ rule all:
 rule calculate_LDscores:
 	conda: LDSC_CONDA
 	input:
-		expand(config["ldsc"]["baselineLD"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.annot.gz",tissue=TISSUES,chrom=CHROMS)
-		#expand(config["ldsc"]["HM3"] + "hm.{chrom}.snp",chrom=CHROMS)
-	output:
-		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.{ext}",tissue=TISSUES,chrom=CHROMS,ext=["log","l2.ldscore.gz","l2.M","l2.M_5_50","OK"]),
-	params:
 		script = LDSC_PATH,
 		python = LDSC_PYTHON,
-		out  = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized",
-		done = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized",
-		bfile  = config["ldsc"]["1KG"] + "1000G.EUR.QC.RegDB",
-		annot  = config["ldsc"]["baselineLD"] + "customized_baselineLD_cts.RegDB.quantile_normalized",
-		hm3    = config["ldsc"]["HM3"] + "hm",
+		bfile  = config["ldsc"]["1KG"] + "1000G.EUR.QC.RegDB.{chrom}",
+		annot  = config["ldsc"]["baselineLD"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.annot.gz",
+		hm3    = config["ldsc"]["HM3"] + "hm.{chrom}.snp"
+	output:
+		expand(onfig["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.{ext}",tissue=TISSUES,chrom=CHROMS,ext=["log","l2.ldscore.gz","l2.M","l2.M_5_50","OK"])
+		out  = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}",
+		done = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK"
+	params:
 		ld_wind_cm = 1
 	shell:
-		"{params.python} {params.script} --l2 --bfile {params.bfile}.{wildcards.chrom} --ld-wind-cm {params.ld_wind_cm} --out {params.out}.{wildcards.tissue}.{wildcards.chrom} --annot {params.annot}.{wildcards.tissue}.{wildcards.chrom}.annot.gz --print-snps {params.hm3}.{wildcards.chrom}.snp && touch {params.done}.{wildcards.tissue}.{wildcards.chrom}.OK"
+		"{input.python} {input.script} --l2 --bfile {input.bfile} --ld-wind-cm {params.ld_wind_cm} --out {output.out} --annot {input.annot} --print-snps {input.hm3} && touch {output.done}"
 '''
 rule calculate_h2:
 	conda: LDSC_CONDA
