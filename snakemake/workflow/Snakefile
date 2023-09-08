@@ -68,7 +68,7 @@ rule calculate_h2:
 	shell:
 		"{input.python} {input.script}"
 		" --h2 {input.sumstats}"
-		" --ref-ld-chr {params.ref_ld_chr}.{wildcards.tissue}"
+		" --ref-ld-chr {params.ref_ld_chr}.{wildcards.tissue}."
 		" --w-ld-chr {params.weights}"
 		" --overlap-annot"
 		" --frqfile-chr {params.freq}"
