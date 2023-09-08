@@ -54,27 +54,23 @@ rule calculate_LDscores:
 rule calculate_h2:
 	conda: LDSC_CONDA
 	input:
+		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{{tissue}}.{chrom}.l2.ldscore.gz",chrom=CHROMS),
 		script = LDSC_PATH,
 		python = LDSC_PYTHON,
-		sumstats = config["ldsc"]["GWAS"] + "{trait}/LDSC/{trait}.sumstats.gz",
-		ref_ld_chr = expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{{tissue}}.{chrom}.l2.ldscore.gz",chrom=CHROMS)
+		sumstats = config["ldsc"]["GWAS"] + "{trait}/LDSC/{trait}.sumstats.gz"
 	output:
 		config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.results"
 	params:
-		script = LDSC_PATH,
-		python = LDSC_PYTHON,
-		out = config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}",
-		done = config["ldsc"]["h2_path"] + "{trait}/{trait}/{trait}.{tissue}.OK",
-		sumstats = config["ldsc"]["GWAS"] + "{trait}/LDSC/{trait}.sumstats.gz",
-		ldscore = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.",
+		out = config["ldsc"]["h2_path"],
+		ref_ld_chr = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized",
 		weights = config["ldsc"]["weights"],
 		freq = config["ldsc"]["freq"]
 	shell:
 		"{input.python} {input.script}"
 		" --h2 {input.sumstats}"
-		" --ref-ld-chr {input.ref_ld_chr}"
+		" --ref-ld-chr {params.ref_ld_chr}.{wildcards.tissue}"
 		" --w-ld-chr {params.weights}"
 		" --overlap-annot"
 		" --frqfile-chr {params.freq}"
 		" --out {params.out}/{wildcards.trait}/{wildcards.trait}.{wildcards.tissue}"
-		" --print-coefficients --print-delete-vals && touch {params.done}/{wildcards.trait}/{wildcards.trait}.OK"
+		" --print-coefficients --print-delete-vals && touch {params.out}/{wildcards.trait}/{wildcards.trait}.OK"
