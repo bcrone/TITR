@@ -30,11 +30,11 @@ def get_tissue_sd(tissue, sd):
 	return tissue_sd.iloc[0]["SD"]
 
 def calculate_tau_star(M, h2g, tissue, tau, sd):
-	sd = get_tissue_sd(tissue)
+	sd = get_tissue_sd(tissue, sd)
 	return ((M * sd)/h2g) * tau
 
 def calculate_tau_star_se(M, h2g, tissue, tau_se, sd):
-	sd = get_tissue_sd(tissue)
+	sd = get_tissue_sd(tissue, sd)
 	return ((M * sd)/h2g) * tau_se
 
 def calculate_tau_star_p(tau_star, tau_star_se):
