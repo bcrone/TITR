@@ -12,11 +12,11 @@ def parse_log_file(log_path):
 				h2g = float(line.split(":")[1].strip().split(" ")[0])
 	return (M, h2g)
 
-def parse_results_file(results_path, M, h2g):
+def parse_results_file(results_path, M, h2g, sd):
 	results_table = pd.read_table(results_path)
 	result = results_table.iloc[-1]
-	tau_star = calculate_tau_star(M, h2g, result["Category"], result["Coefficient"])
-	tau_star_se = calculate_tau_star_se(M, h2g, result["Category"], result["Coefficient_std_error"])
+	tau_star = calculate_tau_star(M, h2g, result["Category"], result["Coefficient"], sd)
+	tau_star_se = calculate_tau_star_se(M, h2g, result["Category"], result["Coefficient_std_error"], sd)
 	tau_star_p = calculate_tau_star_p(tau_star, tau_star_se)
 	row = {"Category":result["Category"].split("L2_0")[0],"Prop._SNPs":result["Prop._SNPs"],"Prop._h2":result["Prop._h2"],"Prop._h2_std_error":result["Prop._h2_std_error"],
 		   "Enrichment":result["Enrichment"],"Enrichment_std_error":result["Enrichment_std_error"],"Enrichment_p":result["Enrichment_p"],"Coefficient":result["Coefficient"],
@@ -24,16 +24,16 @@ def parse_results_file(results_path, M, h2g):
 		   "Tissue_M":M,"Tissue_h2g":h2g,"tau_star":tau_star,"tau_star_se":tau_star_se,"tau_star_p":tau_star_p}
 	return row
 
-def get_tissue_sd(tissue):
+def get_tissue_sd(tissue, sd):
 	tissue_sd_table = pd.read_table(sd)
 	tissue_sd = tissue_sd_table.loc[tissue_sd_table['TISSUE'] == tissue]
 	return tissue_sd.iloc[0]["SD"]
 
-def calculate_tau_star(M, h2g, tissue, tau):
+def calculate_tau_star(M, h2g, tissue, tau, sd):
 	sd = get_tissue_sd(tissue)
 	return ((M * sd)/h2g) * tau
 
-def calculate_tau_star_se(M, h2g, tissue, tau_se):
+def calculate_tau_star_se(M, h2g, tissue, tau_se, sd):
 	sd = get_tissue_sd(tissue)
 	return ((M * sd)/h2g) * tau_se
 
@@ -53,7 +53,7 @@ def main(trait, tissue, path, sd):
 	results_path = f"{path}/{trait}/{trait}.{tissue}.results"
 	log_path = f"{path}/{trait}/{trait}.{tissue}.log"
 	M, h2g = parse_log_file(log_path)
-	row = parse_results_file(results_path, M, h2g)
+	row = parse_results_file(results_path, M, h2g, sd)
 	summary = summary.append(row, ignore_index=True)
 
 	out_path = f"{path}/{trait}/{trait}.{tissue}.tau_star.results"
