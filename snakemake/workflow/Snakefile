@@ -27,7 +27,8 @@ REPO_PATH = config["repo"]["path"]
 rule all:
 	input:
 		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",tissue=TISSUES,chrom=CHROMS),
-		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.results",trait=TRAITS,tissue=TISSUES)
+		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.results",trait=TRAITS,tissue=TISSUES),
+		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.tau_star.results",trait=TRAITS,tissue=TISSUES)
 
 rule calculate_LDscores:
 	conda: LDSC_CONDA
