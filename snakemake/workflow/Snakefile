@@ -22,6 +22,8 @@ LDSC_PATH  = config["ldsc"]["path"]
 LDSC_CONDA = config["ldsc"]["conda"]
 LDSC_PYTHON = config["ldsc"]["python"]
 
+REPO_PATH = config["repo"]["path"]
+
 rule all:
 	input:
 		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",tissue=TISSUES,chrom=CHROMS),
@@ -74,3 +76,20 @@ rule calculate_h2:
 		" --frqfile-chr {params.freq}"
 		" --out {params.out}/{wildcards.trait}/{wildcards.trait}.{wildcards.tissue}"
 		" --print-coefficients --print-delete-vals && touch {params.out}/{wildcards.trait}/{wildcards.trait}.OK"
+
+rule calculate_tau_star:
+	input:
+		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.results",trait=TRAITS,tissue=TISSUES),
+		script = REPO_PATH + "single-tissue-model/calculate_tau_star.py"
+	output:
+		config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.tau_star.results"
+	params:
+		results_path = config["ldsc"]["h2_path"],
+		sd_path = config["repo"]["path"] + "data/RegDB.tissue.sd"
+	shell:
+		"python3 {input.script}"
+		" --trait {wildcards.trait}"
+		" --tissue {wildcards.tissue}"
+		" --path {params.results_path}"
+		" --sd {params.sd_path}"
+
