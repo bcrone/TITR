@@ -9,7 +9,7 @@ def merge_tau_star_results(trait, path):
 									"Tissue_M","Tissue_h2g","tau_star","tau_star_se","tau_star_p"])
 	results = glob.glob(f"{path}/{trait}/{trait}.*.tau_star.results")
 	for file in results:
-		if file.contains("GENERIC"):
+		if "GENERIC" in file:
 			continue
 		result = pd.read_table(file)
 		summary = summary.append(result, ignore_index=True)
