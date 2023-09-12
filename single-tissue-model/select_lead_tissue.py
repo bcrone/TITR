@@ -16,13 +16,17 @@ def merge_tau_star_results(trait, path):
 def select_lead_tau_star(t):
 	return (t.loc[t["tau_star_p"] < (1-(1-0.05)**(1/t.shape[0]))].sort_values(by="tau_star",ascending=False)).iloc[0]
 
+def write_lead_tissue(tissue, trait, path):
+	with open(f"{path}/{trait}/{trait}.lead_tissue","w") as f:
+		f.write(f"{tissue}\n")
+
 def main(trait, path):
 	summary = merge_tau_star_results(trait, path)
 	summary = summary.sort_values(by="Category")
 	summary.to_csv(f'{path}/{trait}/{trait}.tau_star.summary', sep='\t', index=False)
 
 	lead_tau_star = select_lead_tau_star(summary)
-	lead_tau_star["Category"].to_csv(f"{path}/{trait}/{trait}.lead_tissue", index=False, header=False)
+	write_lead_tissue(lead_tau_star["Category"],trait,path)
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
