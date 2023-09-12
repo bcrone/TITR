@@ -24,11 +24,15 @@ LDSC_PYTHON = config["ldsc"]["python"]
 
 REPO_PATH = config["repo"]["path"]
 
+def get_tau_star_results(wildcards):
+
+
 rule all:
 	input:
 		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",tissue=TISSUES,chrom=CHROMS),
 		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.results",trait=TRAITS,tissue=TISSUES),
-		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.tau_star.results",trait=TRAITS,tissue=TISSUES)
+		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.tau_star.results",trait=TRAITS,tissue=TISSUES),
+		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue",trait=TRAITS)
 
 rule calculate_LDscores:
 	conda: LDSC_CONDA
@@ -93,4 +97,17 @@ rule calculate_tau_star:
 		" --tissue {wildcards.tissue}"
 		" --path {params.results_path}"
 		" --sd {params.sd_path}"
+
+rule select_lead_tissue:
+	input:
+		results = expand(config["ldsc"]["h2_path"] +"/{{trait}}/{{trait}}.{tissue}.tau_star.results",tissue=TISSUES),
+		script = REPO_PATH + "single-tissue-model/select_lead_tissue.py"
+	output:
+		config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue"
+	params:
+		results_path = config["ldsc"]["h2_path"]
+	shell:
+		"python3 {input.script}"
+		" --trait {wildcards.trait}"
+		" --path {params.results_path}"
 
