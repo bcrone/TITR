@@ -9,12 +9,14 @@ def merge_tau_star_results(trait, path):
 									"Tissue_M","Tissue_h2g","tau_star","tau_star_se","tau_star_p"])
 	results = glob.glob(f"{path}/{trait}/{trait}.*.tau_star.results")
 	for file in results:
+		if file.contains("GENERIC"):
+			continue
 		result = pd.read_table(file)
 		summary = summary.append(result, ignore_index=True)
 	return summary
 
 def select_lead_tau_star(t):
-	return (t.loc[t["tau_star_p"] < (1-(1-0.05)**(1/t.shape[0]))].sort_values(by="tau_star",ascending=False)).iloc[0]
+	return (t.loc[t["tau_star_p"] < (1-(1-0.05)**(1/t.shape[0]))].sort_values(by="tau_star",ascending=False))
 
 def write_lead_tissue(tissue, trait, path):
 	with open(f"{path}/{trait}/{trait}.lead_tissue","w") as f:
