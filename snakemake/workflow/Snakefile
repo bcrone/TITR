@@ -24,9 +24,6 @@ LDSC_PYTHON = config["ldsc"]["python"]
 
 REPO_PATH = config["repo"]["path"]
 
-def get_tau_star_results(wildcards):
-
-
 rule all:
 	input:
 		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",tissue=TISSUES,chrom=CHROMS),
