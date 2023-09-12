@@ -16,7 +16,7 @@ def merge_tau_star_results(trait, path):
 	return summary
 
 def select_lead_tau_star(t):
-	return (t.loc[t["tau_star_p"] < (1-(1-0.05)**(1/t.shape[0]))].sort_values(by="tau_star",ascending=False))
+	return (t.loc[t["tau_star_p"] < (1-(1-0.05)**(1/t.shape[0]))].sort_values(by="tau_star",ascending=False)).iloc[0]
 
 def write_lead_tissue(tissue, trait, path):
 	with open(f"{path}/{trait}/{trait}.lead_tissue","w") as f:
