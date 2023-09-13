@@ -24,12 +24,14 @@ LDSC_PYTHON = config["ldsc"]["python"]
 
 REPO_PATH = config["repo"]["path"]
 
+
 rule all:
 	input:
 		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",tissue=TISSUES,chrom=CHROMS),
 		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.results",trait=TRAITS,tissue=TISSUES),
 		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.tau_star.results",trait=TRAITS,tissue=TISSUES),
-		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue",trait=TRAITS)
+		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue",trait=TRAITS),
+		expand(config["plink"]["results_path"] + "/{trait}/{trait}.OK",trait=TRAITS)
 
 rule calculate_LDscores:
 	conda: LDSC_CONDA
@@ -107,4 +109,21 @@ rule select_lead_tissue:
 		"python3 {input.script}"
 		" --trait {wildcards.trait}"
 		" --path {params.results_path}"
+
+rule run_PLINK_scores:
+	input:
+		tissue = expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue",trait=TRAITS),
+		script = REPO_PATH + "single-tissue-model/run_PLINK_scores.sh"
+	output:
+		config["plink"]["results_path"] + "/{trait}/{trait}.OK"
+	params:
+		root_path = config["plink"]["root_path"],
+		results_path = config["plink"]["results_path"],
+		ancestry = config["plink"]["ancestry"],
+		plink = config["plink"]["plink"],
+		plink2 = config["plink"]["plink2"]
+	shell:
+		"bash {input.script} {params.root_path} {params.results_path}/{wildcards.trait} {params.ancestry} {wildcards.trait} {input.tissue} {params.plink} {params.plink2}"
+
+
 

@@ -12,3 +12,9 @@ ldsc:
   h2_path: "/nfs/turbo/boylelab/crone/results/h2"
 repo:
   path: "/nfs/turbo/boylelab/crone/repo/TITR/"
+plink:
+  root_path: "/nfs/turbo/boylelab/crone"
+  results_path: "/nfs/turbo/boylelab/crone/results/single-tissue"
+  ancestry: "EUR"
+  plink_path: "/nfs/turbo/boylelab/plink/plink"
+  plink2_path: "/nfs/turbo/boylelab/plink2/plink2"
