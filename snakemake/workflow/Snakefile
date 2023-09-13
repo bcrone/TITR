@@ -123,7 +123,7 @@ rule run_PLINK_scores:
 		plink = config["plink"]["plink_path"],
 		plink2 = config["plink"]["plink2_path"]
 	shell:
-		"bash {input.script} {params.root_path} {params.results_path}/{wildcards.trait} {params.ancestry} {wildcards.trait} {input.tissue} {params.plink} {params.plink2}"
+		"TISSUE=`< {input.tissue}` | bash {input.script} {params.root_path} {params.results_path}/{wildcards.trait} {params.ancestry} {wildcards.trait} '${TISSUE}' {params.plink} {params.plink2}"
 
 
 
