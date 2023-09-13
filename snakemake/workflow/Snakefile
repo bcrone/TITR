@@ -120,8 +120,8 @@ rule run_PLINK_scores:
 		root_path = config["plink"]["root_path"],
 		results_path = config["plink"]["results_path"],
 		ancestry = config["plink"]["ancestry"],
-		plink = config["plink"]["plink"],
-		plink2 = config["plink"]["plink2"]
+		plink = config["plink"]["plink_path"],
+		plink2 = config["plink"]["plink2_path"]
 	shell:
 		"bash {input.script} {params.root_path} {params.results_path}/{wildcards.trait} {params.ancestry} {wildcards.trait} {input.tissue} {params.plink} {params.plink2}"
 
