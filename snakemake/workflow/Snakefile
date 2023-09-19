@@ -112,7 +112,7 @@ rule select_lead_tissue:
 
 rule run_PLINK_scores:
 	input:
-		tissue = expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue",trait=TRAITS),
+		tissue = config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue",
 		script = REPO_PATH + "single-tissue-model/run_PLINK_scores.sh"
 	output:
 		OK = config["plink"]["results_path"] + "/{trait}/{trait}.OK"
