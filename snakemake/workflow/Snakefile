@@ -115,7 +115,7 @@ rule run_PLINK_scores:
 		tissue = expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue",trait=TRAITS),
 		script = REPO_PATH + "single-tissue-model/run_PLINK_scores.sh"
 	output:
-		config["plink"]["results_path"] + "/{trait}/{trait}.OK"
+		OK = config["plink"]["results_path"] + "/{trait}/{trait}.OK"
 	params:
 		root_path = config["plink"]["root_path"],
 		results_path = config["plink"]["results_path"],
@@ -123,7 +123,7 @@ rule run_PLINK_scores:
 		plink = config["plink"]["plink_path"],
 		plink2 = config["plink"]["plink2_path"]
 	shell:
-		"TISSUE=`< {input.tissue}` | echo ${TISSUE}"
+		"TISSUE=`< {input.tissue}` | echo ${TISSUE} | touch {output.OK}"
 		#"TISSUE=`< {input.tissue}` | bash {input.script} {params.root_path} {params.results_path}/{wildcards.trait} {params.ancestry} {wildcards.trait} $TISSUE {params.plink} {params.plink2}"
 
 
