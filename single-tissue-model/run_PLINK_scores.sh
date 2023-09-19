@@ -17,6 +17,10 @@ BIM_PATH="${ROOT_PATH}/data/UKB/${ANCESTRY}/ukb_imp_chrALL_v3.bim"
 FAM_PATH="${ROOT_PATH}/data/UKB/phenos/${ANCESTRY}/${ANCESTRY}.${TRAIT}.fam"
 SAMPLES_PATH="${ROOT_PATH}/data/UKB/phenos/${ANCESTRY}/${ANCESTRY}.${TRAIT}.sample.IDs"
 
+IMPACT_PATH="${ROOT_PATH}/data/IMPACT/${TRAIT}"
+SURF_PATH="${ROOT_PATH}/data/RegDB/GENERIC"
+TURF_PATH="${ROOT_PATH}/data/RegDB/${TISSUE}"
+
 #Standard
 ${PLINK_PATH} --bfile ${EUR_1KG_BFILE} --clump-p1 1 --clump-p2 1 --clump-r2 0.2 --clump-kb 250 --clump ${SUMSTATS} --clump-snp-field SNP --clump-field P --out ${RESULTS_PATH}/${TRAIT}.${ANCESTRY}.standard.clump
 
