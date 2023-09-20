@@ -15,6 +15,10 @@ repo:
 plink:
   root_path: "/nfs/turbo/boylelab/crone"
   results_path: "/nfs/turbo/boylelab/crone/results/single-tissue"
-  ancestry: "EUR"
+  ancestry: "AFR"
   plink_path: "/nfs/turbo/boylelab/plink/plink"
   plink2_path: "/nfs/turbo/boylelab/plink2/plink2"
+bootstrap:
+  root_path: "/nfs/turbo/boylelab/crone"
+  ancestry: "AFR"
+  isQuant: "True"

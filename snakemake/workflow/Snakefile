@@ -17,6 +17,7 @@ TISSUES=["ADIPOSE_TISSUE","ADRENAL_GLAND","ARTERIAL_BLOOD_VESSEL","BLOOD",
 				 "UTERUS","VAGINA","VASCULATURE"]
 
 CHROMS=[x for x in range(1,23)]
+PARTITIONS=[10, 50, 100, 200, 500]
 
 LDSC_PATH  = config["ldsc"]["path"]
 LDSC_CONDA = config["ldsc"]["conda"]
@@ -115,6 +116,10 @@ rule run_PLINK_scores:
 		tissue = config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue",
 		script = REPO_PATH + "single-tissue-model/run_PLINK_scores.sh"
 	output:
+		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".standard.500.1.sscore",
+		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".IMPACT.500.1.sscore",
+		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".SURF.500.1.sscore",
+		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".TURF.500.1.sscore",
 		OK = config["plink"]["results_path"] + "/{trait}/{trait}.OK"
 	params:
 		root_path = config["plink"]["root_path"],
@@ -124,6 +129,23 @@ rule run_PLINK_scores:
 		plink2 = config["plink"]["plink2_path"]
 	shell:
 		"TISSUE=`< {input.tissue}`; bash {input.script} {params.root_path} {params.results_path}/{wildcards.trait} {params.ancestry} {wildcards.trait} $TISSUE {params.plink} {params.plink2}"
+'''
+rule bootstrap_PLINK_scores:
+	input: 
+
+		script = REPO_PATH + "single-tissue-model/bootstrap_PLINK_scores.py"
+	output:
+
+	params:
+		ancestry = config["bootstrap"]["ancestry"],
+		isquant = config["bootstrap"]["isQuant"]
+	shell:
+		"python3 {input.script}"
+		" --ancestry {params.ancestry}"
+		" --trait {wildcards.trait}"
+		" --isQuant {params.isquant}"
+		" --root {params.root_path}"
+'''
 
 
 
