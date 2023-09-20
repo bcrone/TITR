@@ -42,7 +42,8 @@ rule calculate_LDscores:
 		annot  = config["ldsc"]["baselineLD"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.annot.gz",
 		hm3    = config["ldsc"]["HM3"] + "hm.{chrom}.snp"
 	output:
-		config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",
+		config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz"
+	params:
 		bfile = config["ldsc"]["1KG"] + "1000G.EUR.QC.RegDB",
 		ld_wind_cm = 1,
 		out = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized"
