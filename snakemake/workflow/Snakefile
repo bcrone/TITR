@@ -17,7 +17,7 @@ TISSUES=["ADIPOSE_TISSUE","ADRENAL_GLAND","ARTERIAL_BLOOD_VESSEL","BLOOD",
 				 "UTERUS","VAGINA","VASCULATURE"]
 
 CHROMS=[x for x in range(1,23)]
-PARTITIONS=[10, 50, 100, 200, 500]
+MODELS=["standard","IMPACT","SURF","TURF"]
 
 LDSC_PATH  = config["ldsc"]["path"]
 LDSC_CONDA = config["ldsc"]["conda"]
@@ -32,7 +32,7 @@ rule all:
 		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.results",trait=TRAITS,tissue=TISSUES),
 		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.tau_star.results",trait=TRAITS,tissue=TISSUES),
 		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue",trait=TRAITS),
-		expand(config["plink"]["results_path"] + "/{trait}/{trait}.OK",trait=TRAITS)
+		expand(config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".{model}.500.1.sscore",trait=TRAITS,model=MODELS)
 
 rule calculate_LDscores:
 	conda: LDSC_CONDA
@@ -42,10 +42,7 @@ rule calculate_LDscores:
 		annot  = config["ldsc"]["baselineLD"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.annot.gz",
 		hm3    = config["ldsc"]["HM3"] + "hm.{chrom}.snp"
 	output:
-		#expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.{ext}",tissue=TISSUES,chrom=CHROMS,ext=["log","l2.ldscore.gz","l2.M","l2.M_5_50","OK"]),
-		config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",
-		config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.OK"
-	params:
+		config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz"
 		bfile = config["ldsc"]["1KG"] + "1000G.EUR.QC.RegDB",
 		ld_wind_cm = 1,
 		out = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized"
@@ -56,7 +53,7 @@ rule calculate_LDscores:
 		" --ld-wind-cm {params.ld_wind_cm}"
 		" --out {params.out}.{wildcards.tissue}.{wildcards.chrom}"
 		" --annot {input.annot}"
-		" --print-snps {input.hm3} && touch {params.out}.{wildcards.tissue}.{wildcards.chrom}.OK"
+		" --print-snps {input.hm3}"
 
 rule calculate_h2:
 	conda: LDSC_CONDA
@@ -80,7 +77,7 @@ rule calculate_h2:
 		" --overlap-annot"
 		" --frqfile-chr {params.freq}"
 		" --out {params.out}/{wildcards.trait}/{wildcards.trait}.{wildcards.tissue}"
-		" --print-coefficients --print-delete-vals && touch {params.out}/{wildcards.trait}/{wildcards.trait}.OK"
+		" --print-coefficients --print-delete-vals"
 
 rule calculate_tau_star:
 	input:
@@ -116,11 +113,7 @@ rule run_PLINK_scores:
 		tissue = config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue",
 		script = REPO_PATH + "single-tissue-model/run_PLINK_scores.sh"
 	output:
-		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".standard.500.1.sscore",
-		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".IMPACT.500.1.sscore",
-		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".SURF.500.1.sscore",
-		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".TURF.500.1.sscore",
-		OK = config["plink"]["results_path"] + "/{trait}/{trait}.OK"
+		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".{model}.500.1.sscore"
 	params:
 		root_path = config["plink"]["root_path"],
 		results_path = config["plink"]["results_path"],
