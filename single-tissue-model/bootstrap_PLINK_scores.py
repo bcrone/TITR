@@ -160,7 +160,8 @@ def scoreModel(model, trait, ancestry, results_path, adj_R2, isQuant, pheno, ite
 			'Delta Adj R2':score_d_R2, 'P':score_p, 'SNP Count':score_count, 'Iteration':iteration}
 		return row
 	def get_max_score(model, partition, ancestry, results_path, isQuant, adj_R2, iteration, threshold=None):
-		score_path = f"{results_path}/{model}"
+		score_path = f"{results_path}"
+		#score_path = f"{results_path}/{model}"
 		if threshold:
 			score_files = glob.glob(f"{score_path}/{trait}.{ancestry}.{model}.{partition}.{threshold}.sscore")
 		else:
@@ -179,11 +180,12 @@ def scoreModel(model, trait, ancestry, results_path, adj_R2, isQuant, pheno, ite
 	return score_head.append(score_max, ignore_index=True)
 
 def main(ancestry, trait, isQuant, root):
-	results_path = f'{root}/results/single_tissue/{trait}'
-	standard_path = f'{results_path}/standard'
-	IMPACT_path = f'{results_path}/IMPACT'
-	SURF_path = f'{results_path}/SURF'
-	TURF_path = f'{results_path}/TURF'
+	results_path = f'{root}/results/single_tissue/test/{trait}'
+	#results_path = f'{root}/results/single_tissue/{trait}'
+	#standard_path = f'{results_path}/standard'
+	#IMPACT_path = f'{results_path}/IMPACT'
+	#SURF_path = f'{results_path}/SURF'
+	#TURF_path = f'{results_path}/TURF'
 
 	covariates_path = f'{root}/data/UKB/phenos/{ancestry}/{ancestry}.{trait}.covariates'
 	samples_path = f'{root}/data/UKB/phenos/{ancestry}/{ancestry}.{trait}.sample.IDs'
@@ -219,10 +221,16 @@ def main(ancestry, trait, isQuant, root):
 		SURF_max = SURF_max.append(scoreModel("SURF", trait, ancestry, results_path, coding_adj_R2, isQuant, sample_pheno, i, SURF_threshold), ignore_index=True)
 		TURF_max = TURF_max.append(scoreModel("TURF", trait, ancestry, results_path, coding_adj_R2, isQuant, sample_pheno, i, TURF_threshold), ignore_index=True)
 
+	standard_max.to_csv(f"{results_path}/{trait}.{ancestry}.standard.bootstrap",sep='\t',header=True,index=False)
+	IMPACT_max.to_csv(f"{results_path}/{trait}.{ancestry}.IMPACT.bootstrap",sep='\t',header=True,index=False)
+	SURF_max.to_csv(f"{results_path}/{trait}.{ancestry}.SURF.bootstrap",sep='\t',header=True,index=False)
+	TURF_max.to_csv(f"{results_path}/{trait}.{ancestry}.TURF.bootstrap",sep='\t',header=True,index=False)
+	'''
 	standard_max.to_csv(f"{standard_path}/{trait}.{ancestry}.standard.bootstrap",sep='\t',header=True,index=False)
 	IMPACT_max.to_csv(f"{IMPACT_path}/{trait}.{ancestry}.IMPACT.bootstrap",sep='\t',header=True,index=False)
 	SURF_max.to_csv(f"{SURF_path}/{trait}.{ancestry}.SURF.bootstrap",sep='\t',header=True,index=False)
 	TURF_max.to_csv(f"{TURF_path}/{trait}.{ancestry}.TURF.bootstrap",sep='\t',header=True,index=False)
+	'''
 
 
 if __name__ == "__main__":
