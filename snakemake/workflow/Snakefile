@@ -154,5 +154,3 @@ rule bootstrap_PLINK_scores:
 		" --trait {wildcards.trait}"
 		" --isQuant {params.isquant}"
 		" --root {params.root_path}"
-
-\
