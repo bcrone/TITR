@@ -147,7 +147,8 @@ rule bootstrap_PLINK_scores:
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".TURF.bootstrap"
 	params:
 		ancestry = config["bootstrap"]["ancestry"],
-		isquant = config["bootstrap"]["isQuant"]
+		isquant = config["bootstrap"]["isQuant"],
+		root_path = config["bootstrap"]["root_path"]
 	shell:
 		"python3 {input.script}"
 		" --ancestry {params.ancestry}"
