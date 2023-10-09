@@ -14,7 +14,7 @@ repo:
   path: "/nfs/turbo/boylelab/crone/repo/TITR/"
 plink:
   root_path: "/nfs/turbo/boylelab/crone"
-  results_path: "/nfs/turbo/boylelab/crone/results/single-tissue"
+  results_path: "/nfs/turbo/boylelab/crone/results/single_tissue/test"
   ancestry: "AFR"
   plink_path: "/nfs/turbo/boylelab/plink/plink"
   plink2_path: "/nfs/turbo/boylelab/plink2/plink2"
