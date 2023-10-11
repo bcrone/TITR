@@ -120,7 +120,7 @@ def scoreStandardModel(trait, ancestry, results_path, adj_R2, isQuant, pheno, it
 			'Delta Adj R2':score_d_R2, 'P':score_p, 'SNP Count':score_count, 'Iteration':iteration}
 		return row
 	def get_max_score(trait, ancestry, results_path, adj_R2, isQuant, iteration, threshold=None):
-		score_path = f"{results_path}/standard"
+		score_path = f"{results_path}"
 		if threshold:
 			score_files = glob.glob(f"{score_path}/{trait}.{ancestry}.standard.{threshold}.sscore")
 		else:
