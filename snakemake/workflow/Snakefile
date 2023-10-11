@@ -31,7 +31,7 @@ rule all:
 		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.results",trait=TRAITS,tissue=TISSUES),
 		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.tau_star.results",trait=TRAITS,tissue=TISSUES),
 		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue",trait=TRAITS),
-		expand(config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".standard.500.1.sscore",trait=TRAITS),
+		expand(config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".standard.1.sscore",trait=TRAITS),
 		expand(config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".IMPACT.500.1.sscore",trait=TRAITS),
 		expand(config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".SURF.500.1.sscore",trait=TRAITS),
 		expand(config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".TURF.500.1.sscore",trait=TRAITS),
@@ -120,7 +120,7 @@ rule run_PLINK_scores:
 		tissue = config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue",
 		script = REPO_PATH + "single-tissue-model/run_PLINK_scores.sh"
 	output:
-		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".standard.500.1.sscore",
+		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".standard.1.sscore",
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".IMPACT.500.1.sscore",
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".SURF.500.1.sscore",
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".TURF.500.1.sscore"
@@ -135,7 +135,7 @@ rule run_PLINK_scores:
 
 rule bootstrap_PLINK_scores:
 	input: 
-		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".standard.500.1.sscore",
+		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".standard.1.sscore",
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".IMPACT.500.1.sscore",
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".SURF.500.1.sscore",
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".TURF.500.1.sscore",
