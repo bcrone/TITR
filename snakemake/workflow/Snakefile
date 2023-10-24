@@ -27,7 +27,7 @@ REPO_PATH = config["repo"]["path"]
 
 rule all:
 	input:
-		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",tissue=TISSUES,chrom=CHROMS),
+		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.TLand.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",tissue=TISSUES,chrom=CHROMS),
 		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.results",trait=TRAITS,tissue=TISSUES),
 		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.tau_star.results",trait=TRAITS,tissue=TISSUES),
 		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue",trait=TRAITS),
@@ -45,14 +45,14 @@ rule calculate_LDscores:
 	input:
 		script = LDSC_PATH,
 		python = LDSC_PYTHON,
-		annot  = config["ldsc"]["baselineLD"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.annot.gz",
+		annot  = config["ldsc"]["baselineLD"] + "customized_baselineLD_cts.TLand.quantile_normalized.{tissue}.{chrom}.annot.gz",
 		hm3    = config["ldsc"]["HM3"] + "hm.{chrom}.snp"
 	output:
-		config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz"
+		config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.TLand.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz"
 	params:
-		bfile = config["ldsc"]["1KG"] + "1000G.EUR.QC.RegDB",
+		bfile = config["ldsc"]["1KG"] + "1000G.EUR.QC.TLand",
 		ld_wind_cm = 1,
-		out = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized"
+		out = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.TLand.quantile_normalized"
 	shell:
 		"{input.python} {input.script}"
 		" --l2"
@@ -65,7 +65,7 @@ rule calculate_LDscores:
 rule calculate_h2:
 	conda: LDSC_CONDA
 	input:
-		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{{tissue}}.{chrom}.l2.ldscore.gz",chrom=CHROMS),
+		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.TLand.quantile_normalized.{{tissue}}.{chrom}.l2.ldscore.gz",chrom=CHROMS),
 		script = LDSC_PATH,
 		python = LDSC_PYTHON,
 		sumstats = config["ldsc"]["GWAS"] + "{trait}/LDSC/{trait}.sumstats.gz"
@@ -73,7 +73,7 @@ rule calculate_h2:
 		config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.results"
 	params:
 		out = config["ldsc"]["h2_path"],
-		ref_ld_chr = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.RegDB.quantile_normalized",
+		ref_ld_chr = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.TLand.quantile_normalized",
 		weights = config["ldsc"]["weights"],
 		freq = config["ldsc"]["freq"]
 	shell:
