@@ -27,7 +27,8 @@ REPO_PATH = config["repo"]["path"]
 
 rule all:
 	input:
-		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.TLand.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",tissue=TISSUES,chrom=CHROMS),
+		expand(config["ldsc"]["ldscore_path_TF"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",tissue=TISSUES,chrom=CHROMS),
+		expand(config["ldsc"]["ldscore_path_TL"] + "customized_baselineLD_cts.TLand.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",tissue=TISSUES,chrom=CHROMS),
 		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.results",trait=TRAITS,tissue=TISSUES),
 		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.tau_star.results",trait=TRAITS,tissue=TISSUES),
 		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue",trait=TRAITS),
@@ -45,85 +46,126 @@ rule calculate_LDscores:
 	input:
 		script = LDSC_PATH,
 		python = LDSC_PYTHON,
-		annot  = config["ldsc"]["baselineLD"] + "customized_baselineLD_cts.TLand.quantile_normalized.{tissue}.{chrom}.annot.gz",
+		annot_TF  = config["ldsc"]["baselineLD_TF"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.annot.gz",
+		annot_TL  = config["ldsc"]["baselineLD_TL"] + "customized_baselineLD_cts.TLand.quantile_normalized.{tissue}.{chrom}.annot.gz",
 		hm3    = config["ldsc"]["HM3"] + "hm.{chrom}.snp"
 	output:
-		config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.TLand.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz"
+		config["ldsc"]["ldscore_path_TF"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz",
+		config["ldsc"]["ldscore_path_TL"] + "customized_baselineLD_cts.TLand.quantile_normalized.{tissue}.{chrom}.l2.ldscore.gz"
 	params:
-		bfile = config["ldsc"]["1KG"] + "1000G.EUR.QC.TLand",
+		bfile_TF = config["ldsc"]["1KG"] + "1000G.EUR.QC.RegDB",
+		bfile_TL = config["ldsc"]["1KG"] + "1000G.EUR.QC.TLand",
 		ld_wind_cm = 1,
-		out = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.TLand.quantile_normalized"
+		out_TF = config["ldsc"]["ldscore_path_TF"] + "customized_baselineLD_cts.RegDB.quantile_normalized",
+		out_TL = config["ldsc"]["ldscore_path_TL"] + "customized_baselineLD_cts.TLand.quantile_normalized"
 	shell:
 		"{input.python} {input.script}"
 		" --l2"
-		" --bfile  {params.bfile}.{wildcards.chrom}"
+		" --bfile  {params.bfile_TF}.{wildcards.chrom}"
 		" --ld-wind-cm {params.ld_wind_cm}"
-		" --out {params.out}.{wildcards.tissue}.{wildcards.chrom}"
-		" --annot {input.annot}"
+		" --out {params.out_TF}.{wildcards.tissue}.{wildcards.chrom}"
+		" --annot {input.annot_TF}"
+		" --print-snps {input.hm3} &&"
+		" {input.python} {input.script}"
+		" --l2"
+		" --bfile  {params.bfile_TL}.{wildcards.chrom}"
+		" --ld-wind-cm {params.ld_wind_cm}"
+		" --out {params.out_TL}.{wildcards.tissue}.{wildcards.chrom}"
+		" --annot {input.annot_TL}"
 		" --print-snps {input.hm3}"
 
 rule calculate_h2:
 	conda: LDSC_CONDA
 	input:
-		expand(config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.TLand.quantile_normalized.{{tissue}}.{chrom}.l2.ldscore.gz",chrom=CHROMS),
+		expand(config["ldsc"]["ldscore_path_TF"] + "customized_baselineLD_cts.RegDB.quantile_normalized.{{tissue}}.{chrom}.l2.ldscore.gz",chrom=CHROMS),
+		expand(config["ldsc"]["ldscore_path_TL"] + "customized_baselineLD_cts.TLand.quantile_normalized.{{tissue}}.{chrom}.l2.ldscore.gz",chrom=CHROMS),
 		script = LDSC_PATH,
 		python = LDSC_PYTHON,
 		sumstats = config["ldsc"]["GWAS"] + "{trait}/LDSC/{trait}.sumstats.gz"
 	output:
-		config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.results"
+		config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.TURF.results",
+		config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.TLAND.results"
 	params:
 		out = config["ldsc"]["h2_path"],
-		ref_ld_chr = config["ldsc"]["ldscore_path"] + "customized_baselineLD_cts.TLand.quantile_normalized",
+		ref_ld_chr_TF = config["ldsc"]["ldscore_path_TF"] + "customized_baselineLD_cts.RegDB.quantile_normalized",
+		ref_ld_chr_TL = config["ldsc"]["ldscore_path_TL"] + "customized_baselindLD_cts.TLand.quantile_normalized",
 		weights = config["ldsc"]["weights"],
 		freq = config["ldsc"]["freq"]
 	shell:
 		"{input.python} {input.script}"
 		" --h2 {input.sumstats}"
-		" --ref-ld-chr {params.ref_ld_chr}.{wildcards.tissue}."
+		" --ref-ld-chr {params.ref_ld_chr_TF}.{wildcards.tissue}."
 		" --w-ld-chr {params.weights}"
 		" --overlap-annot"
 		" --frqfile-chr {params.freq}"
-		" --out {params.out}/{wildcards.trait}/{wildcards.trait}.{wildcards.tissue}"
+		" --out {params.out}/{wildcards.trait}/{wildcards.trait}.{wildcards.tissue}.TURF"
+		" --print-coefficients --print-delete-vals &&"
+		" {input.python} {input.script}"
+		" --h2 {input.sumstats}"
+		" --ref-ld-chr {params.ref_ld_chr_TL}.{wildcards.tissue}."
+		" --w-ld-chr {params.weights}"
+		" --overlap-annot"
+		" --frqfile-chr {params.freq}"
+		" --out {params.out}/{wildcards.trait}/{wildcards.trait}.{wildcards.tissue}.TLAND"
 		" --print-coefficients --print-delete-vals"
 
 rule calculate_tau_star:
 	input:
-		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.results",trait=TRAITS,tissue=TISSUES),
+		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.TURF.results",trait=TRAITS,tissue=TISSUES),
+		expand(config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.TLAND.results",trait=TRAITS,tissue=TISSUES),
 		script = REPO_PATH + "single-tissue-model/calculate_tau_star.py"
 	output:
-		config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.tau_star.results"
+		config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.tau_star.TURF.results",
+		config["ldsc"]["h2_path"] + "/{trait}/{trait}.{tissue}.tau_star.TLAND.results"
 	params:
 		results_path = config["ldsc"]["h2_path"],
-		sd_path = config["repo"]["path"] + "data/RegDB.tissue.sd"
+		sd_path_TF = config["repo"]["path"] + "data/RegDB.tissue.sd",
+		sd_path_TL = config["repo"]["path"] + "data/TLand.tissue.sd"
 	shell:
 		"python3 {input.script}"
 		" --trait {wildcards.trait}"
 		" --tissue {wildcards.tissue}"
 		" --path {params.results_path}"
-		" --sd {params.sd_path}"
+		" --sd {params.sd_path_TF}"
+		" --model TURF &&"
+		" python3 {input.script}"
+		" --trait {wildcards.trait}"
+		" --tissue {wildcards.tissue}"
+		" --path {params.results_path}"
+		" --sd {params.sd_path_TL}"
+		" --model TLAND"
 
 rule select_lead_tissue:
 	input:
-		results = expand(config["ldsc"]["h2_path"] +"/{{trait}}/{{trait}}.{tissue}.tau_star.results",tissue=TISSUES),
+		results_TF = expand(config["ldsc"]["h2_path"] +"/{{trait}}/{{trait}}.{tissue}.tau_star.TURF.results",tissue=TISSUES),
+		results_TL = expand(config["ldsc"]["h2_path"] + "/{{trait}}/{{trait}}.{tissue}.tau_star.TLAND.results",tissue=TISSUES),
 		script = REPO_PATH + "single-tissue-model/select_lead_tissue.py"
 	output:
-		config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue"
+		config["ldsc"]["h2_path"] + "/{trait}/{trait}.TURF.lead_tissue",
+		config["ldsc"]["h2_path"] + "/{trait}/{trait}.TLAND.lead_tissue"
 	params:
 		results_path = config["ldsc"]["h2_path"]
 	shell:
 		"python3 {input.script}"
 		" --trait {wildcards.trait}"
 		" --path {params.results_path}"
+		" --model TURF &&"
+		" python3 {input.script}"
+		" --trait {wildcards.trait}"
+		" --path {params.results_path}"
+		" --model TLAND"
 
 rule run_PLINK_scores:
 	input:
-		tissue = config["ldsc"]["h2_path"] + "/{trait}/{trait}.lead_tissue",
+		tissue_TF = config["ldsc"]["h2_path"] + "/{trait}/{trait}.TURF.lead_tissue",
+		tissue_TL = config["ldsc"]["h2_path"] + "/{trait}/{trait}.TLAND.lead_tissue",
 		script = REPO_PATH + "single-tissue-model/run_PLINK_scores.sh"
 	output:
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".standard.1.sscore",
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".IMPACT.500.1.sscore",
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".SURF.500.1.sscore",
-		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".TURF.500.1.sscore"
+		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".TURF.500.1.sscore",
+		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".TLAND.500.1.sscore"
 	params:
 		root_path = config["plink"]["root_path"],
 		results_path = config["plink"]["results_path"],
@@ -131,7 +173,7 @@ rule run_PLINK_scores:
 		plink = config["plink"]["plink_path"],
 		plink2 = config["plink"]["plink2_path"]
 	shell:
-		"TISSUE=`< {input.tissue}`; bash {input.script} {params.root_path} {params.results_path}/{wildcards.trait} {params.ancestry} {wildcards.trait} $TISSUE {params.plink} {params.plink2}"
+		"TISSUE_TF=`< {input.tissue_TF}`; TISSUE_TL=`< {input.tissue_TL}`; bash {input.script} {params.root_path} {params.results_path}/{wildcards.trait} {params.ancestry} {wildcards.trait} $TISSUE_TF $TISSUE_TL {params.plink} {params.plink2}"
 
 rule bootstrap_PLINK_scores:
 	input: 
@@ -139,12 +181,14 @@ rule bootstrap_PLINK_scores:
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".IMPACT.500.1.sscore",
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".SURF.500.1.sscore",
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".TURF.500.1.sscore",
+		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".TLAND.500.1.sscore"
 		script = REPO_PATH + "single-tissue-model/bootstrap_PLINK_scores.py"
 	output:
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".standard.bootstrap",
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".IMPACT.bootstrap",
 		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".SURF.bootstrap",
-		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".TURF.bootstrap"
+		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".TURF.bootstrap",
+		config["plink"]["results_path"] + "/{trait}/{trait}." + config["plink"]["ancestry"] + ".TLAND.bootstrap"
 	params:
 		ancestry = config["bootstrap"]["ancestry"],
 		isquant = config["bootstrap"]["isQuant"],
@@ -155,3 +199,10 @@ rule bootstrap_PLINK_scores:
 		" --trait {wildcards.trait}"
 		" --isQuant {params.isquant}"
 		" --root {params.root_path}"
+		" --model TURF &&"
+		" python3 {input.script}"
+		" --ancestry {params.ancestry}"
+		" --trait {wildcards.trait}"
+		" --isQuant {params.isquant}"
+		" --root {params.root_path}"
+		" --model TLAND"

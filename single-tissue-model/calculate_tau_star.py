@@ -43,20 +43,20 @@ def calculate_tau_star_p(tau_star, tau_star_se):
 def select_lead_tau_star(t):
 	return (t.loc[t["tau_star_p"] < (1-(1-0.05)**(1/t.shape[0]))].sort_values(by="tau_star",ascending=False))
 
-def main(trait, tissue, path, sd):
+def main(trait, tissue, path, sd, model):
 
 	summary = pd.DataFrame(columns=["Category","Prop._SNPs","Prop._h2","Prop._h2_std_error",
 									"Enrichment","Enrichment_std_error","Enrichment_p","Coefficient",
 									"Coefficient_std_error","Coefficient_z-score","Coefficient_p",
 									"Tissue_M","Tissue_h2g","tau_star","tau_star_se","tau_star_p"])
 
-	results_path = f"{path}/{trait}/{trait}.{tissue}.results"
-	log_path = f"{path}/{trait}/{trait}.{tissue}.log"
+	results_path = f"{path}/{trait}/{trait}.{tissue}.{model}.results"
+	log_path = f"{path}/{trait}/{trait}.{tissue}.{model}.log"
 	M, h2g = parse_log_file(log_path)
 	row = parse_results_file(results_path, M, h2g, sd)
 	summary = summary.append(row, ignore_index=True)
 
-	out_path = f"{path}/{trait}/{trait}.{tissue}.tau_star.results"
+	out_path = f"{path}/{trait}/{trait}.{tissue}.tau_star.{model}.results"
 	summary.to_csv(out_path, sep='\t', index=False)
 
 if __name__ == "__main__":
@@ -65,7 +65,7 @@ if __name__ == "__main__":
 	parser.add_argument('--tissue', type=str, required=True)
 	parser.add_argument('--path', type=str, required=True)
 	parser.add_argument('--sd', type=str, required=True)
-	
+	parser.add_argument('--model', type=str, required=True)
 	args = parser.parse_args()
 
-	main(trait=args.trait, tissue=args.tissue, path=args.path, sd=args.sd)
+	main(trait=args.trait, tissue=args.tissue, path=args.path, sd=args.sd, model=args.model)
