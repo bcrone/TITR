@@ -1,0 +1,24 @@
+cluster:
+        mkdir -p logs/{rule} &&
+        sbatch
+        --cpus-per-task={threads}
+        --mem={resources.mem_mb}
+        --time={resources.time}
+        --job-name=smk-{rule}
+        --output=logs/{rule}/{jobid}.out
+        --error=logs/{rule}/{jobid}.err
+        --partition={resources.partition}
+        --account={resources.account}
+default-resources:
+        - mem_mb=65000
+        - time=600
+        - partition=largemem,standard
+        - account=apboyle99
+jobs: 100
+latency-wait: 60
+restart-times: 0
+max-jobs-per-second: 10
+printshellcmds: True
+use-conda: False
+use-singularity: False
+#cluster-status: ~/.config/snakemake/slurm2/slurm-status.py
