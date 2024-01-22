@@ -6,12 +6,12 @@ TRAIT="$1"
 ITERATION="$2"
 ROOT_PATH="$3"
 
-SUMSTATS="/path/to/GWAS/sumstats/${TRAIT}/LDSC/${TRAIT}.sumstats.gz"
-OUTSTATS="/path/to/GWAS/sumstats/${TRAIT}/LDSC/${TRAIT}.ITERATION_${ITERATION}.sumstats.gz"
-MASTER_SNPS="/path/to/results/${TRAIT}/${TRAIT}.TURF.ITERATION_$((ITERATION-1)).snplist"
+SUMSTATS="${ROOT_PATH}/data/GWAS/${TRAIT}/LDSC/${TRAIT}.sumstats.gz"
+OUTSTATS="${ROOT_PATH}/data/GWAS/${TRAIT}/LDSC/${TRAIT}.ITERATION_${ITERATION}.sumstats.gz"
+MASTER_SNPS="${ROOT_PATH}/results/traits/${TRAIT}/${TRAIT}.TURF.ITERATION_$((ITERATION-1)).snplist"
 
 rm slurm/${TRAIT}.run_ldsc.jobs
-rm /path/to/results/${TRAIT}/${TRAIT}.terminate
+rm ${ROOT_PATH}/results/traits/${TRAIT}/${TRAIT}.terminate
 
 gzip -cd ${SUMSTATS} | grep -v -w -f ${MASTER_SNPS} | gzip > ${OUTSTATS}
 

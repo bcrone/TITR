@@ -16,14 +16,14 @@ TRAIT="$2"
 ITERATION="$3"
 ROOT_PATH="$4"
 
-SUMSTATS="/path/to/GWAS/\${TRAIT}/\${TRAIT}.PLINK.TITR"
-OUTPATH="/path/to/results/traits/\${TRAIT}"
+SUMSTATS="\${ROOT_PATH}/data/GWAS/\${TRAIT}/\${TRAIT}.PLINK.TITR"
+OUTPATH="\${ROOT_PATH}/results/traits/\${TRAIT}"
 
-PLINK2_PATH="/path/to/plink2"
+PLINK2_PATH="/nfs/turbo/boylelab/plink2/plink2"
 
-BED_FILE="/path/to/UKB/\${ANCESTRY}/ukb_imp_chrALL_v3.bed"
-BIM_FILE="/path/to/UKB/\${ANCESTRY}/ukb_imp_chrALL_v3.bim"
-FAM_FILE="/path/to/UKB/phenos/\${ANCESTRY}/\${ANCESTRY}.\${TRAIT}.fam"
+BED_FILE="\${ROOT_PATH}/data/UKB/\${ANCESTRY}/ukb_imp_chrALL_v3.bed"
+BIM_FILE="\${ROOT_PATH}/data/UKB/\${ANCESTRY}/ukb_imp_chrALL_v3.bim"
+FAM_FILE="\${ROOT_PATH}/data/UKB/phenos/\${ANCESTRY}/\${ANCESTRY}.\${TRAIT}.fam"
 
 \${PLINK2_PATH} --pgen \${BED_FILE} --pvar \${BIM_FILE} --psam \${FAM_FILE} --score \${SUMSTATS} 1 2 3 header no-mean-imputation \
 	--extract \${OUTPATH}/\${TRAIT}.TURF.ITERATION_\${ITERATION}.snplist --remove \${ROOT_PATH}/data/UKB/phenos/\${ANCESTRY}/\${ANCESTRY}.\${TRAIT}.NA \

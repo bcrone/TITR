@@ -19,21 +19,21 @@ ITERATION="$3"
 PARTITION="$4"
 ROOT_PATH="$5"
 
-EUR_1KG_BFILE="/path/to/1KG/1000G_EUR_Phase3_plink/1000G.EUR.QC"
-SUMSTATS="/path/to/GWAS/\${TRAIT}/\${TRAIT}.PLINK.TITR"
-CLUMP="/path/to/GWAS/\${TRAIT}/\${TRAIT}.PLINK.dedup"
-TISSUE_PATH="/path/to/RegDB/\${TISSUE}/1000G_phase3_master_scores_1KG-pruned_quantile_normalized_chrALL.\${TISSUE}.\${SLURM_ARRAY_TASK_ID}.SNPs"
-OUTPATH="/path/to/results/\${TISSUE}"
+EUR_1KG_BFILE="\${ROOT_PATH}/data/1KG/1000G_EUR_Phase3_plink/1000G.EUR.QC"
+SUMSTATS="\${ROOT_PATH}/data/GWAS/\${TRAIT}/\${TRAIT}.PLINK.TITR"
+CLUMP="\${ROOT_PATH}/data/GWAS/\${TRAIT}/\${TRAIT}.PLINK.dedup"
+TISSUE_PATH="\${ROOT_PATH}/data/RegDB/\${TISSUE}/1000G_phase3_master_scores_1KG-pruned_quantile_normalized_chrALL.\${TISSUE}.\${SLURM_ARRAY_TASK_ID}.SNPs"
+OUTPATH="\${ROOT_PATH}/results/\${TISSUE}"
 
-PLINK_PATH="/path/to/plink"
-PLINK2_PATH="/path/to/plink2"
+PLINK_PATH="/nfs/turbo/boylelab/plink/plink"
+PLINK2_PATH="/nfs/turbo/boylelab/plink2/plink2"
 
-BED_FILE="/path/to/UKB/\${ANCESTRY}/ukb_imp_chrALL_v3.bed"
-BIM_FILE="/path/to/UKB/\${ANCESTRY}/ukb_imp_chrALL_v3.bim"
-FAM_FILE="/path/to/UKB/phenos/\${ANCESTRY}/\${ANCESTRY}.\${TRAIT}.fam"
+BED_FILE="\${ROOT_PATH}/data/UKB/\${ANCESTRY}/ukb_imp_chrALL_v3.bed"
+BIM_FILE="\${ROOT_PATH}/data/UKB/\${ANCESTRY}/ukb_imp_chrALL_v3.bim"
+FAM_FILE="\${ROOT_PATH}/data/UKB/phenos/\${ANCESTRY}/\${ANCESTRY}.\${TRAIT}.fam"
 
-RANGE_LIST="/path/to/UKB/phenos/range_list.expanded"
-SAMPLE_PATH="/path/to/UKB/phenos/\${ANCESTRY}/\${ANCESTRY}.\${TRAIT}.sample.IDs"
+RANGE_LIST="\${ROOT_PATH}/data/UKB/phenos/range_list.expanded"
+SAMPLE_PATH="\${ROOT_PATH}/data/UKB/phenos/\${ANCESTRY}/\${ANCESTRY}.\${TRAIT}.sample.IDs"
 
 module load python3.9-anaconda
 
