@@ -23,8 +23,64 @@ Processes were run on nodes with following hardware:
 - Processor: 2x 3.0 GHz Intel Xeon Gold 6154 (36 cores/node)
 - Memory: 1.5TB RAM (65GB max requested)
 Time requested varies from 5-10hrs/job - trait dependent
-## Data Storage Structure
-
+## Directory Structure
+```
+ROOT_PATH
+├── data
+│   ├── 1KG
+│   │   ├── 1000G_EUR_Phase3_plink
+│   │   ├── 1000G_Phase3_frq
+│   │   ├── 1000G_Phase3_weights_hm3_no_MHC
+│   │   ├── hapmap3_snps
+│   │   ├── RegDB_custom_baselineLD_v1.2
+│   │   │   └── serial
+│   │   │       └── quantiles
+│   │   └── TLand_custom_baselineLD_v1.2
+│   │       └── serial
+│   │           └── quantiles
+│   ├── GWAS
+│   │   ├── <traits>
+│   ├── IMPACT
+│   │   ├── <traits>
+│   ├── LDSC
+│   ├── RegDB
+│   │   ├── <tissues>
+│   ├── TLand
+│   │   ├── <tissues>
+│   └── UKB
+│       ├── AFR
+│       ├── EUR
+│       └── phenos
+│           ├── AFR
+│           └── EUR
+├── repo
+│   └── TITR
+│       ├── profile
+│       │   └── slurm
+│       ├── single-tissue-model
+│       │   ├── logs
+│       │   └── slurm
+│       ├── TITR
+│       └── snakemake
+│           ├── config
+│           └── workflow
+│               └── logs
+└── results
+    ├── <tissues>
+    ├── coding
+    │   ├── <traits>
+    ├── h2
+    │   ├── <traits>
+    ├── single_tissue
+    │   └── <traits>
+    │       ├── IMPACT
+    │       ├── standard
+    │       ├── SURF
+    │       ├── TURF
+    │       └── TLand
+    └── traits
+        └── <traits>
+```
 ## Single Tissue Model
 The single tissue functional prioritization model is implemented in a Snakemake workflow, developed for use on SLURM-managed HPC environment. 
 ### Workflow overview
